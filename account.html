@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Address Information - Green Global Funds</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .brand-green { color: #007A33; }
+        .bg-brand-green { background-color: #007A33; }
+        .bg-brand-dark-green { background-color: #004B23; }
+        .border-brand-green { border-color: #007A33; }
+        input:focus, select:focus { border-color: #007A33; box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.15); }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 antialiased min-h-screen flex flex-col">
+
+    <header class="bg-white border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center text-white">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="leading-tight">
+                    <span class="font-bold text-sm tracking-wide block uppercase" data-i18n="siteName">Green Global</span>
+                    <span class="text-xs tracking-widest block text-gray-500 uppercase -mt-1" data-i18n="siteSuffix">Funds</span>
+                </div>
+            </a>
+
+            <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
+                <a href="index.html" class="hover:text-brand-green transition" data-i18n="navHome">Home</a>
+                <a href="#" class="hover:text-brand-green transition" data-i18n="navAbout">About Us</a>
+                <a href="#" class="hover:text-brand-green transition" data-i18n="navServices">Services</a>
+                <a href="#" class="hover:text-brand-green transition" data-i18n="navHow">How It Works</a>
+                <a href="#" class="hover:text-brand-green transition" data-i18n="navContact">Contact</a>
+            </nav>
+
+            <div class="flex items-center space-x-3">
+                <button onclick="showLanguageOverlay()" class="flex items-center space-x-1.5 border border-gray-200 rounded-lg px-3 py-2 text-xs hover:bg-gray-50 transition" title="Change Country / Language">
+                    <span id="current-flag">🇺🇸</span>
+                    <span id="current-country-name" class="hidden sm:inline text-gray-600 font-medium">United States</span>
+                    <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+                </button>
+                <a href="signin.html" class="border border-brand-green brand-green px-5 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition" data-i18n="signIn">Sign In</a>
+                <a href="signup.html" class="bg-brand-green text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-emerald-800 transition" data-i18n="signUp">Sign Up</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow py-10 px-4">
+        <div class="max-w-3xl mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+            <div class="flex items-center gap-3 mb-8 pb-4 border-b border-gray-100">
+                <div class="w-8 h-8 bg-brand-green text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                <h2 class="text-xl font-bold text-gray-900" data-i18n="addressInfo">Address Information</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="md:col-span-3">
+                    <label for="street" class="block text-sm font-semibold text-gray-600 mb-1.5" data-i18n="streetLabel">Street & House Number</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-green"><i class="fas fa-home text-sm"></i></span>
+                        <input type="text" id="street" data-i18n-placeholder="streetPlaceholder" placeholder="Enter street and house number" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="postal-code" class="block text-sm font-semibold text-gray-600 mb-1.5" data-i18n="postalLabel">Postal Code</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-green"><i class="fas fa-mailbox text-sm"></i></span>
+                        <input type="text" id="postal-code" data-i18n-placeholder="postalPlaceholder" placeholder="Enter postal code" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="city" class="block text-sm font-semibold text-gray-600 mb-1.5" data-i18n="cityLabel">City</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-green"><i class="fas fa-city text-sm"></i></span>
+                        <input type="text" id="city" data-i18n-placeholder="cityPlaceholder" placeholder="Enter your city" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="state" class="block text-sm font-semibold text-gray-600 mb-1.5" data-i18n="stateLabel">State / Federal State</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-green pointer-events-none"><i class="fas fa-map text-sm"></i></span>
+                        <select id="state" class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white appearance-none cursor-pointer">
+                            <option value="" disabled selected data-i18n="selectState">Select state</option>
+                            <option value="Bavaria">Bavaria</option>
+                            <option value="Berlin">Berlin</option>
+                            <option value="Hamburg">Hamburg</option>
+                            <option value="NRW">North Rhine-Westphalia</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down text-xs"></i></span>
+                    </div>
+                </div>
+
+                <div class="md:col-span-3">
+                    <label for="country" class="block text-sm font-semibold text-gray-600 mb-1.5" data-i18n="countryLabel">Country</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-green pointer-events-none"><i class="fas fa-globe text-sm"></i></span>
+                        <select id="country" class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white appearance-none cursor-pointer">
+                            <option value="Germany" selected>Germany</option>
+                            <option value="Austria">Austria</option>
+                            <option value="Switzerland">Switzerland</option>
+                            <option value="Nigeria">Nigeria</option>
+                        </select>
+                        <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down text-xs"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-gray-100 flex justify-between items-center">
+                <a href="signup.html" class="text-sm text-gray-500 hover:text-brand-green transition flex items-center gap-1">
+                    <i class="fas fa-arrow-left text-xs"></i> <span data-i18n="back">Back</span>
+                </a>
+                <button type="submit" class="bg-brand-green text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-800 transition shadow-sm" data-i18n="continueBtn">
+                    Continue
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-brand-dark-green text-white py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-emerald-200">
+            <p data-i18n="footerRights">&copy; 2026 Green Global Funds. All rights reserved.</p>
+        </div>
+    </footer>
+
+<script src="languages.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function() { buildCountryOverlay(); initLanguageSelector(); });</script>
+</body>
+</html>

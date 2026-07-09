@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Your Account - Green Global Funds</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .brand-green { color: #007A33; }
+        .bg-brand-green { background-color: #007A33; }
+        .bg-brand-dark-green { background-color: #004B23; }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+
+    <div class="bg-white rounded-3xl shadow-xl w-full max-w-4xl overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[640px]">
+        
+        <div class="md:col-span-5 bg-brand-dark-green p-10 text-white flex flex-col justify-between relative overflow-hidden">
+            <div class="absolute inset-0 opacity-10 pointer-events-none">
+                <svg width="100%" height="100%"><path d="M0 100 Q 100 300 300 100 T 600 300" fill="none" stroke="white" stroke-width="2"/></svg>
+            </div>
+            
+            <a href="index.html" class="flex items-center space-x-2 z-10">
+                <div class="w-7 h-7 rounded-full bg-white text-emerald-900 flex items-center justify-center text-sm">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="leading-tight text-xs tracking-wide font-bold uppercase">
+                    <span class="block" data-i18n="siteName">Green Global</span> <span class="block text-[10px] font-normal tracking-widest text-emerald-300 opacity-80 -mt-0.5" data-i18n="siteSuffix">Funds</span>
+                </div>
+            </a>
+
+            <div class="my-auto py-8 z-10">
+                <h2 class="text-3xl font-bold mb-4" data-i18n="createAccount">Create Your Account</h2>
+                <p class="text-emerald-100 text-sm opacity-90 leading-relaxed" data-i18n="signUpDesc">
+                    Join thousands of people who trust Green Global Funds to grow their money securely.
+                </p>
+            </div>
+
+            <div class="space-y-3 text-xs text-emerald-100 font-medium z-10">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check-circle text-emerald-400"></i> <span data-i18n="secureSafe">Secure & Safe</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check-circle text-emerald-400"></i> <span data-i18n="easyReg">Easy Registration</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check-circle text-emerald-400"></i> <span data-i18n="startGrowing">Start Growing Today</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="md:col-span-7 p-10 flex flex-col justify-center relative">
+            <div class="absolute top-4 right-4">
+                <button onclick="showLanguageOverlay()" class="flex items-center space-x-1.5 border border-gray-200 rounded-lg px-3 py-1.5 text-xs hover:bg-gray-50 transition" title="Change Country / Language">
+                    <span id="current-flag">🇺🇸</span>
+                    <span id="current-country-name" class="hidden sm:inline text-gray-600 font-medium">United States</span>
+                    <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+                </button>
+            </div>
+            <a href="index.html" class="text-gray-600 hover:text-brand-green transition text-sm flex items-center gap-2 mb-4 border border-gray-200 rounded-lg px-3 py-1.5 w-fit hover:bg-gray-50">
+                <i class="fas fa-arrow-left text-xs"></i> <span data-i18n="backToHome">Back to Home</span>
+            </a>
+            <div class="mb-6">
+                <h3 class="text-2xl font-bold text-gray-900" data-i18n="signUpTitle">Sign Up</h3>
+                <p class="text-gray-400 text-xs mt-1" data-i18n="signUpSub">Create your Green Global Funds account</p>
+            </div>
+
+            <form class="space-y-3.5">
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                        <i class="far fa-user"></i>
+                    </span>
+                    <input type="text" id="signup-name" data-i18n-placeholder="fullName" placeholder="Full Name" class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                </div>
+
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                        <i class="far fa-envelope"></i>
+                    </span>
+                    <input type="email" id="signup-email" data-i18n-placeholder="email" placeholder="Email Address" class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                </div>
+
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                        <i class="fas fa-phone-alt text-xs"></i>
+                    </span>
+                    <input type="tel" id="signup-phone" data-i18n-placeholder="phoneNumber" placeholder="Phone Number" class="w-full pl-11 pr-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                </div>
+
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input type="password" id="signup-pass" data-i18n-placeholder="password" placeholder="Password" class="w-full pl-11 pr-11 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer text-xs">
+                        <i class="far fa-eye-slash"></i>
+                    </span>
+                </div>
+
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input type="password" id="signup-confirm" data-i18n-placeholder="confirmPass" placeholder="Confirm Password" class="w-full pl-11 pr-11 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer text-xs">
+                        <i class="far fa-eye-slash"></i>
+                    </span>
+                </div>
+
+                <div class="flex items-start space-x-2 text-xs pt-1">
+                    <input type="checkbox" id="signup-terms" class="rounded border-gray-300 text-brand-green focus:ring-transparent w-4 h-4 mt-0.5">
+                    <span class="text-gray-500 leading-normal">
+                        <span data-i18n="agreeTerms">I agree to the</span> <a href="#" class="text-emerald-600 font-semibold hover:underline" data-i18n="termsAndCond">Terms and Conditions</a> <span data-i18n="and">and</span> <a href="#" class="text-emerald-600 font-semibold hover:underline" data-i18n="privacyPolicy">Privacy Policy</a>
+                    </span>
+                </div>
+
+                <button type="button" onclick="handleSignUp()" class="w-full block text-center bg-brand-green text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-emerald-800 transition mt-4 cursor-pointer" data-i18n="createAccountBtn">
+                    Create Account
+                </button>
+            </form>
+
+            <div class="text-center text-xs text-gray-500 mt-6">
+                <span data-i18n="alreadyAccount">Already have an account?</span> <a href="signin.html" class="text-emerald-600 font-bold hover:underline" data-i18n="signIn">Sign In</a>
+            </div>
+        </div>
+
+    </div>
+
+<script src="languages.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() { buildCountryOverlay(); initLanguageSelector(); });
+
+function handleSignUp() {
+  const name = document.getElementById("signup-name");
+  const email = document.getElementById("signup-email");
+  const phone = document.getElementById("signup-phone");
+  const pass = document.getElementById("signup-pass");
+  const confirm = document.getElementById("signup-confirm");
+  const terms = document.getElementById("signup-terms");
+
+  if (!name.value.trim() || !email.value.trim() || !phone.value.trim() || !pass.value || !confirm.value) {
+    alert("Please fill in all fields.");
+    return;
+  }
+  if (pass.value !== confirm.value) {
+    alert("Passwords do not match.");
+    return;
+  }
+  if (!terms.checked) {
+    alert("Please agree to the Terms and Conditions.");
+    return;
+  }
+  window.location.href = "account.html";
+}
+</script>
+</body>
+</html>

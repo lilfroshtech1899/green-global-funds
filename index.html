@@ -1,0 +1,205 @@
+ <!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="siteTitle">Green Global Funds - Grow Your Money</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .brand-green { color: #007A33; }
+        .bg-brand-green { background-color: #007A33; }
+        .bg-brand-dark-green { background-color: #004B23; }
+        .border-brand-green { border-color: #007A33; }
+        .country-option { cursor: pointer; }
+    </style>
+</head>
+<body class="bg-white font-sans text-gray-800 antialiased">
+
+    <header class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+            <a href="index.html" class="flex items-center space-x-2">
+                <div class="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center text-white">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="leading-tight">
+                    <span class="font-bold text-sm tracking-wide block uppercase" data-i18n="siteName">Green Global</span>
+                    <span class="text-xs tracking-widest block text-gray-500 uppercase -mt-1" data-i18n="siteSuffix">Funds</span>
+                </div>
+            </a>
+        </div>
+        
+        <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
+            <a href="#" class="text-brand-green" data-i18n="navHome">Home</a>
+            <a href="#" class="hover:text-brand-green transition" data-i18n="navAbout">About Us</a>
+            <a href="#" class="hover:text-brand-green transition" data-i18n="navServices">Services</a>
+            <a href="#" class="hover:text-brand-green transition" data-i18n="navHow">How It Works</a>
+            <a href="#" class="hover:text-brand-green transition" data-i18n="navBlog">Blog</a>
+            <a href="#" class="hover:text-brand-green transition" data-i18n="navContact">Contact</a>
+        </nav>
+
+        <div class="flex items-center space-x-3">
+            <button onclick="showLanguageOverlay()" class="flex items-center space-x-1.5 border border-gray-200 rounded-lg px-3 py-2 text-xs hover:bg-gray-50 transition" title="Change Country / Language">
+                <span id="current-flag">🇺🇸</span>
+                <span id="current-country-name" class="hidden sm:inline text-gray-600 font-medium">United States</span>
+                <i class="fas fa-chevron-down text-[10px] text-gray-400"></i>
+            </button>
+            <a href="signin.html" class="border border-brand-green brand-green px-5 py-2 rounded-lg text-sm font-medium hover:bg-green-50 transition" data-i18n="signIn">Sign In</a>
+            <a href="signup.html" class="bg-brand-green text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-emerald-800 transition" data-i18n="signUp">Sign Up</a>
+        </div>
+    </header>
+
+    <section class="max-w-7xl mx-auto px-6 pt-12 pb-20 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+        <div>
+            <span class="bg-green-50 text-emerald-700 text-xs font-semibold px-3 py-1.5 rounded-full inline-block mb-6" data-i18n="badgeWelcome">
+                Welcome to Green Global Funds
+            </span>
+            <h1 class="text-5xl md:text-6xl font-bold tracking-tight text-gray-900 mb-4 leading-tight">
+                <span data-i18n="headline">Grow Your Money.</span><br>
+                <span class="brand-green" data-i18n="headlineGreen">Secure Your Future.</span>
+            </h1>
+            <p class="text-gray-500 text-base max-w-md mb-8 leading-relaxed" data-i18n="heroText">
+                Green Global Funds helps you save, invest and grow your money with secure, reliable and profitable financial solutions.
+            </p>
+            <div class="flex space-x-4">
+                <a href="#" class="bg-brand-green text-white px-6 py-3 rounded-lg font-medium text-sm flex items-center space-x-2 hover:bg-emerald-800 transition">
+                    <span data-i18n="getStarted">Get Started</span>
+                    <i class="fas fa-arrow-right text-xs"></i>
+                </a>
+                <a href="#" class="border border-gray-300 text-gray-600 px-6 py-3 rounded-lg font-medium text-sm hover:bg-gray-50 transition" data-i18n="learnMore">
+                    Learn More
+                </a>
+            </div>
+        </div>
+        <div class="relative flex justify-center">
+            <div class="relative w-full max-w-md aspect-square flex items-center justify-center">
+                <div class="absolute inset-0 bg-gradient-to-tr from-green-50 to-transparent rounded-full -z-10 animate-pulse"></div>
+                <i class="fas fa-globe-africa text-[15rem] text-emerald-600 opacity-90 drop-shadow-2xl"></i>
+                <div class="absolute bottom-4 right-4 bg-white p-4 rounded-xl shadow-lg border border-gray-100 flex items-end space-x-2">
+                    <div class="w-4 h-8 bg-green-200 rounded-sm"></div>
+                    <div class="w-4 h-12 bg-green-300 rounded-sm"></div>
+                    <div class="w-4 h-16 bg-green-400 rounded-sm"></div>
+                    <div class="w-4 h-24 bg-brand-green rounded-sm"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-brand-dark-green text-white py-6">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm">
+            <div class="flex items-start space-x-3">
+                <div class="mt-1 bg-emerald-800 p-2 rounded-lg text-emerald-300"><i class="fas fa-shield-alt"></i></div>
+                <div>
+                    <h4 class="font-semibold" data-i18n="featSecure">Secure & Trusted</h4>
+                    <p class="text-xs text-emerald-200 opacity-80 mt-0.5" data-i18n="featSecureDesc">Bank-level security to keep your funds safe.</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="mt-1 bg-emerald-800 p-2 rounded-lg text-emerald-300"><i class="fas fa-chart-line"></i></div>
+                <div>
+                    <h4 class="font-semibold" data-i18n="featReturns">High Returns</h4>
+                    <p class="text-xs text-emerald-200 opacity-80 mt-0.5" data-i18n="featReturnsDesc">Competitive returns that help your money grow faster.</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="mt-1 bg-emerald-800 p-2 rounded-lg text-emerald-300"><i class="fas fa-clock"></i></div>
+                <div>
+                    <h4 class="font-semibold" data-i18n="featFast">Easy & Fast</h4>
+                    <p class="text-xs text-emerald-200 opacity-80 mt-0.5" data-i18n="featFastDesc">Simple processes, quick transactions.</p>
+                </div>
+            </div>
+            <div class="flex items-start space-x-3">
+                <div class="mt-1 bg-emerald-800 p-2 rounded-lg text-emerald-300"><i class="fas fa-headset"></i></div>
+                <div>
+                    <h4 class="font-semibold" data-i18n="featSupport">24/7 Support</h4>
+                    <p class="text-xs text-emerald-200 opacity-80 mt-0.5" data-i18n="featSupportDesc">We are here to help you anytime, anywhere.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-6 py-20 text-center">
+<span class="text-xs font-bold tracking-widest text-brand-green uppercase block mb-2" data-i18n="ourServices">Our Services</span>
+            <h2 class="text-3xl font-bold text-gray-900 mb-12" data-i18n="serviceTitle">Smart Financial Solutions<br>for a Better Tomorrow</h2>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="border border-gray-100 rounded-2xl p-8 hover:shadow-xl hover:border-transparent transition bg-white group flex flex-col items-center">
+                <div class="w-14 h-14 bg-brand-green text-white rounded-full flex items-center justify-center text-xl mb-6 shadow-md">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-3 text-gray-800" data-i18n="serviceSavings">Savings</h3>
+                <p class="text-gray-500 text-xs leading-relaxed max-w-[200px] mb-6 flex-grow" data-i18n="serviceSavingsDesc">Secure your future with flexible savings plans designed for you.</p>
+                <a href="#" class="brand-green text-xs font-semibold flex items-center space-x-1 group-hover:underline">
+                    <span data-i18n="learnMoreBtn">Learn More</span> <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <div class="border border-gray-100 rounded-2xl p-8 hover:shadow-xl hover:border-transparent transition bg-white group flex flex-col items-center">
+                <div class="w-14 h-14 bg-brand-green text-white rounded-full flex items-center justify-center text-xl mb-6 shadow-md">
+                    <i class="fas fa-chart-pie"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-3 text-gray-800" data-i18n="serviceInvest">Investments</h3>
+                <p class="text-gray-500 text-xs leading-relaxed max-w-[200px] mb-6 flex-grow" data-i18n="serviceInvestDesc">Grow your wealth with profitable and secure investment opportunities.</p>
+                <a href="#" class="brand-green text-xs font-semibold flex items-center space-x-1 group-hover:underline">
+                    <span data-i18n="learnMoreBtn">Learn More</span> <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <div class="border border-gray-100 rounded-2xl p-8 hover:shadow-xl hover:border-transparent transition bg-white group flex flex-col items-center">
+                <div class="w-14 h-14 bg-brand-green text-white rounded-full flex items-center justify-center text-xl mb-6 shadow-md">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-3 text-gray-800" data-i18n="serviceLoans">Loans</h3>
+                <p class="text-gray-500 text-xs leading-relaxed max-w-[200px] mb-6 flex-grow" data-i18n="serviceLoansDesc">Get quick and flexible loans with easy repayment options.</p>
+                <a href="#" class="brand-green text-xs font-semibold flex items-center space-x-1 group-hover:underline">
+                    <span data-i18n="learnMoreBtn">Learn More</span> <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+
+            <div class="border border-gray-100 rounded-2xl p-8 hover:shadow-xl hover:border-transparent transition bg-white group flex flex-col items-center">
+                <div class="w-14 h-14 bg-brand-green text-white rounded-full flex items-center justify-center text-xl mb-6 shadow-md">
+                    <i class="fas fa-umbrella"></i>
+                </div>
+                <h3 class="font-bold text-lg mb-3 text-gray-800" data-i18n="serviceInsurance">Insurance</h3>
+                <p class="text-gray-500 text-xs leading-relaxed max-w-[200px] mb-6 flex-grow" data-i18n="serviceInsuranceDesc">Protect what matters most with reliable insurance solutions.</p>
+                <a href="#" class="brand-green text-xs font-semibold flex items-center space-x-1 group-hover:underline">
+                    <span data-i18n="learnMoreBtn">Learn More</span> <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-gray-50 border-t border-gray-100 py-16">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div>
+                <span class="bg-green-100 text-emerald-800 text-xs font-semibold px-3 py-1 rounded-full inline-block mb-4" data-i18n="chooseBadge">Why Choose Us</span>
+                <h2 class="text-3xl font-bold text-gray-900 mb-4" data-i18n="chooseTitle">Your Trust, Our<br>Commitment</h2>
+                <p class="text-gray-500 text-sm leading-relaxed max-w-md mb-6" data-i18n="chooseText">
+                    At Green Global Funds, we are committed to providing transparent, reliable, and innovative financial services that help you achieve your financial goals.
+                </p>
+                <a href="#" class="brand-green text-xs font-bold flex items-center space-x-1 hover:underline">
+                    <span data-i18n="learnMoreBtn">Learn More</span> <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            </div>
+            <div class="rounded-2xl overflow-hidden bg-brand-dark-green h-64 flex items-center justify-center text-white relative">
+                <div class="absolute inset-0 bg-black opacity-20"></div>
+                <div class="z-10 text-center">
+                    <div class="text-2xl font-bold flex items-center justify-center space-x-2">
+                        <i class="fas fa-building text-3xl text-emerald-400"></i>
+                        <span>GREEN GLOBAL</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-brand-dark-green text-white py-8">
+        <div class="max-w-7xl mx-auto px-6 text-center text-sm text-emerald-200">
+            <p data-i18n="footerRights">&copy; 2026 Green Global Funds. All rights reserved.</p>
+        </div>
+    </footer>
+
+<script src="languages.js"></script>
+<script>document.addEventListener("DOMContentLoaded", function() { buildCountryOverlay(); initLanguageSelector(); });</script>
+</body>
+</html>
