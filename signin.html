@@ -61,62 +61,197 @@
             <a href="index.html" class="text-gray-600 hover:text-brand-green transition text-sm flex items-center gap-2 mb-4 border border-gray-200 rounded-lg px-3 py-1.5 w-fit hover:bg-gray-50">
                 <i class="fas fa-arrow-left text-xs"></i> <span data-i18n="backToHome">Back to Home</span>
             </a>
-            <div class="mb-8">
-                <h3 class="text-2xl font-bold text-gray-900" data-i18n="signInTitle">Sign In</h3>
-                <p class="text-gray-400 text-xs mt-1" data-i18n="signInSub">Enter your details to access your account</p>
-            </div>
-
-            <form class="space-y-4">
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
-                        <i class="far fa-envelope"></i>
-                    </span>
-                    <input type="email" data-i18n-placeholder="email" placeholder="Email Address" class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+            <!-- Sign In -->
+            <div id="signin-box">
+                <div class="mb-8">
+                    <h3 class="text-2xl font-bold text-gray-900" data-i18n="signInTitle">Sign In</h3>
+                    <p class="text-gray-400 text-xs mt-1" data-i18n="signInSub">Enter your details to access your account</p>
                 </div>
 
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
-                        <i class="fas fa-lock"></i>
-                    </span>
-                    <input type="password" data-i18n-placeholder="password" placeholder="Password" class="w-full pl-11 pr-11 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
-                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer hover:text-gray-600 text-xs">
-                        <i class="far fa-eye-slash"></i>
-                    </span>
+                <form class="space-y-4" onsubmit="return false;" onkeydown="handleEnter(event)">
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                            <i class="far fa-envelope"></i>
+                        </span>
+                        <input type="email" id="signin-email" data-i18n-placeholder="email" placeholder="Email Address" class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                    </div>
+
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                        <input type="password" id="signin-pass" data-i18n-placeholder="password" placeholder="Password" class="w-full pl-11 pr-11 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                        <span onclick="togglePass('signin-pass', this)" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer hover:text-gray-600 text-xs">
+                            <i class="far fa-eye-slash"></i>
+                        </span>
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs pt-1">
+                        <label class="flex items-center space-x-2 text-gray-500 cursor-pointer">
+                            <input type="checkbox" id="signin-remember" class="rounded border-gray-300 text-brand-green focus:ring-transparent w-4 h-4">
+                            <span data-i18n="rememberMe">Remember Me</span>
+                        </label>
+                        <a href="#" onclick="showForgot(true); return false;" class="text-emerald-600 hover:underline font-semibold" data-i18n="forgotPassword">Forgot Password?</a>
+                    </div>
+
+                    <button type="button" onclick="handleSignIn()" class="w-full bg-brand-green text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-emerald-800 transition mt-2 cursor-pointer" data-i18n="signInBtn">
+                        Sign In
+                    </button>
+                </form>
+
+                <div class="relative my-6 text-center">
+                    <hr class="border-gray-100">
+                    <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-gray-400 text-xs" data-i18n="or">or</span>
                 </div>
 
-                <div class="flex items-center justify-between text-xs pt-1">
-                    <label class="flex items-center space-x-2 text-gray-500 cursor-pointer">
-                        <input type="checkbox" class="rounded border-gray-300 text-brand-green focus:ring-transparent w-4 h-4">
-                        <span data-i18n="rememberMe">Remember Me</span>
-                    </label>
-                    <a href="#" class="text-emerald-600 hover:underline font-semibold" data-i18n="forgotPassword">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="w-full bg-brand-green text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-emerald-800 transition mt-2" data-i18n="signInBtn">
-                    Sign In
+                <button type="button" onclick="handleGoogleSignIn()" class="w-full border border-gray-200 text-gray-700 py-3 rounded-xl font-medium text-sm flex items-center justify-center space-x-2 hover:bg-gray-50 transition cursor-pointer">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24">
+                        <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.107C18.29 1.137 15.538 0 12.24 0 5.58 0 0 5.37 0 12s5.58 12 12.24 12c6.96 0 11.57-4.834 11.57-11.79 0-.79-.085-1.4-.185-1.925H12.24z"/>
+                    </svg>
+                    <span data-i18n="signInGoogle">Sign in with Google</span>
                 </button>
-            </form>
 
-            <div class="relative my-6 text-center">
-                <hr class="border-gray-100">
-                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-gray-400 text-xs" data-i18n="or">or</span>
+                <div class="text-center text-xs text-gray-500 mt-8">
+                    <span data-i18n="noAccount">Don't have an account?</span> <a href="signup.html" class="text-emerald-600 font-bold hover:underline" data-i18n="signUpLink">Sign Up</a>
+                </div>
             </div>
 
-            <button class="w-full border border-gray-200 text-gray-700 py-3 rounded-xl font-medium text-sm flex items-center justify-center space-x-2 hover:bg-gray-50 transition">
-                <svg class="w-4 h-4" viewBox="0 0 24 24">
-                    <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.107C18.29 1.137 15.538 0 12.24 0 5.58 0 0 5.37 0 12s5.58 12 12.24 12c6.96 0 11.57-4.834 11.57-11.79 0-.79-.085-1.4-.185-1.925H12.24z"/>
-                </svg>
-                <span data-i18n="signInGoogle">Sign in with Google</span>
-            </button>
+            <!-- Forgot Password -->
+            <div id="forgot-box" class="hidden">
+                <a href="#" onclick="showForgot(false); return false;" class="text-gray-600 hover:text-brand-green transition text-sm flex items-center gap-2 mb-4 border border-gray-200 rounded-lg px-3 py-1.5 w-fit hover:bg-gray-50">
+                    <i class="fas fa-arrow-left text-xs"></i> Back to Sign In
+                </a>
 
-            <div class="text-center text-xs text-gray-500 mt-8">
-                <span data-i18n="noAccount">Don't have an account?</span> <a href="signup.html" class="text-emerald-600 font-bold hover:underline" data-i18n="signUpLink">Sign Up</a>
+                <div id="forgot-form">
+                    <h3 class="text-2xl font-bold text-gray-900">Reset Password</h3>
+                    <p class="text-gray-400 text-xs mt-1 mb-6">Enter your email and new password</p>
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                                <i class="far fa-envelope"></i>
+                            </span>
+                            <input type="email" id="forgot-email" placeholder="Email Address" class="w-full pl-11 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                        </div>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" id="forgot-new-pass" placeholder="New Password" class="w-full pl-11 pr-11 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                            <span onclick="togglePass('forgot-new-pass', this)" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer hover:text-gray-600 text-xs">
+                                <i class="far fa-eye-slash"></i>
+                            </span>
+                        </div>
+                        <div class="relative">
+                            <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                            <input type="password" id="forgot-confirm-pass" placeholder="Confirm New Password" class="w-full pl-11 pr-11 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
+                            <span onclick="togglePass('forgot-confirm-pass', this)" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer hover:text-gray-600 text-xs">
+                                <i class="far fa-eye-slash"></i>
+                            </span>
+                        </div>
+                        <button type="button" onclick="resetForgotPassword()" class="w-full bg-brand-green text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-emerald-800 transition cursor-pointer">Reset Password</button>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script src="supabase.js?v=3"></script>
 <script src="languages.js"></script>
-<script>document.addEventListener("DOMContentLoaded", function() { buildCountryOverlay(); initLanguageSelector(); });</script>
+<script>
+document.addEventListener("DOMContentLoaded", async function() {
+  buildCountryOverlay();
+  initLanguageSelector();
+  await initAuth();
+  onAuthChange(function(event, session) {
+    if (event === 'SIGNED_IN') {
+      window.location.href = "dashboard.html";
+    }
+  });
+  const user = await getUserData();
+  if (user) {
+    window.location.href = "dashboard.html";
+  }
+});
+
+async function handleSignIn() {
+  const email = document.getElementById("signin-email");
+  const pass = document.getElementById("signin-pass");
+
+  if (!email.value.trim() || !pass.value) {
+    alert("Please fill in all fields.");
+    return;
+  }
+  try {
+    await signInWithEmail(email.value.trim(), pass.value);
+    window.location.href = "dashboard.html";
+  } catch (err) {
+    alert(err.message || "Invalid email or password.");
+  }
+}
+
+function handleEnter(e) {
+  if (e.key !== 'Enter') return;
+  const tag = e.target.tagName;
+  if (tag !== 'INPUT') return;
+  e.preventDefault();
+  const form = e.target.closest('form');
+  const inputs = form.querySelectorAll('input:not([type="checkbox"]):not([readonly]), button[type="submit"]');
+  const idx = Array.from(inputs).indexOf(e.target);
+  if (idx < inputs.length - 1) {
+    inputs[idx + 1].focus();
+  } else {
+    form.querySelector('button[type="submit"]')?.click();
+  }
+}
+
+function togglePass(id, el) {
+  const input = document.getElementById(id);
+  const icon = el.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'far fa-eye';
+  } else {
+    input.type = 'password';
+    icon.className = 'far fa-eye-slash';
+  }
+}
+
+function showForgot(show) {
+  document.getElementById("signin-box").classList.toggle("hidden", show);
+  document.getElementById("forgot-box").classList.toggle("hidden", !show);
+  if (show) {
+    document.getElementById("forgot-email").value = "";
+    document.getElementById("forgot-new-pass").value = "";
+    document.getElementById("forgot-confirm-pass").value = "";
+  }
+}
+
+async function resetForgotPassword() {
+  const email = document.getElementById("forgot-email").value.trim();
+  const newPass = document.getElementById("forgot-new-pass").value;
+  const confirm = document.getElementById("forgot-confirm-pass").value;
+
+  if (!email || !newPass || !confirm) { alert("Please fill in all fields."); return; }
+  if (newPass.length < 6) { alert("Password must be at least 6 characters."); return; }
+  if (newPass !== confirm) { alert("Passwords do not match."); return; }
+
+  try {
+    await resetPassword(email, newPass);
+    alert("Password reset successfully! You can now sign in.");
+    showForgot(false);
+  } catch (err) {
+    alert(err.message || "Failed to reset password.");
+  }
+}
+
+function handleGoogleSignIn() {
+  signInWithGoogle(window.location.origin + "/signin.html");
+}
+</script>
 </body>
 </html>

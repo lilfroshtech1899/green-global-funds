@@ -12,11 +12,17 @@
         .bg-brand-dark-green { background-color: #004B23; }
         .border-brand-green { border-color: #007A33; }
         input:focus, select:focus { border-color: #007A33; box-shadow: 0 0 0 3px rgba(0, 122, 51, 0.15); }
-        .sidebar-item { transition: all 0.2s; }
+        .sidebar-item { transition: all 0.2s; cursor: pointer; }
         .sidebar-item:hover { background-color: #f0fdf4; color: #007A33; }
         .sidebar-item.active { background-color: #f0fdf4; color: #007A33; border-right: 3px solid #007A33; }
         .stat-card { transition: transform 0.2s; }
         .stat-card:hover { transform: translateY(-2px); }
+        .view { display: none; }
+        .view.active { display: block; }
+        .settings-tab { cursor: pointer; transition: all 0.2s; color: #6b7280; border-bottom: 2px solid transparent; padding: 12px 20px; font-size: 14px; font-weight: 500; }
+        .settings-tab:hover { color: #007A33; }
+        .settings-tab.active { color: #007A33; border-bottom-color: #007A33; }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body class="bg-gray-50 font-sans text-gray-800 antialiased min-h-screen flex">
@@ -36,36 +42,48 @@
         </div>
 
         <nav class="flex-1 py-4 px-3 space-y-1 text-sm font-medium text-gray-600 overflow-y-auto">
-            <a href="dashboard.html" class="sidebar-item active flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+            <a onclick="switchView('dashboard')" class="sidebar-item active flex items-center space-x-3 px-4 py-2.5 rounded-lg">
                 <i class="fas fa-th-large w-5 text-center"></i>
                 <span data-i18n="navDashboard">Dashboard</span>
             </a>
-            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
-                <i class="fas fa-wallet w-5 text-center"></i>
-                <span data-i18n="navAccounts">Accounts</span>
+            <a onclick="switchView('settings'); showSettingsTab('profile')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+                <i class="fas fa-user w-5 text-center"></i>
+                <span data-i18n="navAccounts">Account</span>
             </a>
-            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+            <a onclick="switchView('deposit')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+                <i class="fas fa-arrow-down w-5 text-center text-green-600"></i>
+                <span>Deposit</span>
+            </a>
+            <a onclick="switchView('withdraw')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+                <i class="fas fa-arrow-up w-5 text-center text-red-500"></i>
+                <span>Withdraw</span>
+            </a>
+            <a onclick="switchView('transfer')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+                <i class="fas fa-exchange-alt w-5 text-center text-blue-500"></i>
+                <span>Transfer</span>
+            </a>
+            <a onclick="switchView('transactions')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
                 <i class="fas fa-exchange-alt w-5 text-center"></i>
                 <span data-i18n="navTransactions">Transactions</span>
             </a>
-            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
-                <i class="fas fa-chart-line w-5 text-center"></i>
-                <span data-i18n="navInvestments">Investments</span>
-            </a>
-            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+            <a onclick="switchView('savings')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
                 <i class="fas fa-piggy-bank w-5 text-center"></i>
                 <span data-i18n="navSavings">Savings</span>
             </a>
-            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+            <a onclick="switchView('investments')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+                <i class="fas fa-chart-line w-5 text-center"></i>
+                <span data-i18n="navInvestments">Investments</span>
+            </a>
+            <a onclick="switchView('loans')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
                 <i class="fas fa-hand-holding-usd w-5 text-center"></i>
                 <span data-i18n="navLoans">Loans</span>
             </a>
             <hr class="my-3 border-gray-100">
-            <a href="#" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
+            <a onclick="switchView('settings')" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg">
                 <i class="fas fa-cog w-5 text-center"></i>
                 <span data-i18n="navSettings">Settings</span>
             </a>
-            <a href="index.html" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50">
+            <a href="#" onclick="handleSignOut()" class="sidebar-item flex items-center space-x-3 px-4 py-2.5 rounded-lg text-red-500 hover:text-red-600 hover:bg-red-50">
                 <i class="fas fa-sign-out-alt w-5 text-center"></i>
                 <span data-i18n="signOut">Sign Out</span>
             </a>
@@ -73,10 +91,10 @@
 
         <div class="p-4 border-t border-gray-100">
             <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-full bg-brand-green text-white flex items-center justify-center text-sm font-bold">JD</div>
+                <div class="w-9 h-9 rounded-full bg-brand-green text-white flex items-center justify-center text-sm font-bold" id="userInitials">JD</div>
                 <div class="text-xs">
-                    <span class="font-semibold text-gray-800 block" data-i18n="demoUser">John Doe</span>
-                    <span class="text-gray-400">john@example.com</span>
+                    <span class="font-semibold text-gray-800 block" id="userName">John Doe</span>
+                    <span class="text-gray-400" id="userEmail">john@example.com</span>
                 </div>
             </div>
         </div>
@@ -89,7 +107,7 @@
         <header class="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between sticky top-0 z-20">
             <div>
                 <h1 class="text-xl font-bold text-gray-900" data-i18n="dashboardTitle">Dashboard</h1>
-                <p class="text-xs text-gray-400" data-i18n="dashboardSub">Welcome back, John! Here's your financial overview.</p>
+                <p class="text-xs text-gray-400" id="welcomeSub">Welcome back! Here's your financial overview.</p>
             </div>
             <div class="flex items-center space-x-4">
                 <button onclick="showLanguageOverlay()" class="flex items-center space-x-1.5 border border-gray-200 rounded-lg px-3 py-2 text-xs hover:bg-gray-50 transition">
@@ -107,135 +125,525 @@
         <!-- Dashboard content -->
         <main class="flex-1 p-8">
 
-            <!-- Balance card -->
-            <div class="bg-brand-dark-green rounded-2xl p-8 text-white mb-8 shadow-md relative overflow-hidden">
-                <div class="absolute inset-0 opacity-10 pointer-events-none">
-                    <svg width="100%" height="100%"><path d="M0 100 Q 100 300 300 100 T 600 300" fill="none" stroke="white" stroke-width="2"/></svg>
-                </div>
-                <div class="relative z-10">
-                    <p class="text-sm text-emerald-200 font-medium mb-1" data-i18n="totalBalance">Total Balance</p>
-                    <h2 class="text-4xl font-bold mb-6">$0.00</h2>
-                    <div class="flex space-x-4 text-xs">
-                        <div class="bg-emerald-800/50 rounded-lg px-4 py-2.5">
-                            <span class="text-emerald-300 block" data-i18n="income">Income</span>
-                            <span class="font-bold text-white">$0.00</span>
+            <!-- ==================== DASHBOARD VIEW ==================== -->
+            <div id="dashboard-view" class="view active">
+
+                <!-- Balance card -->
+                <div class="bg-brand-dark-green rounded-2xl p-8 text-white mb-8 shadow-md relative overflow-hidden">
+                    <div class="absolute inset-0 opacity-10 pointer-events-none">
+                        <svg width="100%" height="100%"><path d="M0 100 Q 100 300 300 100 T 600 300" fill="none" stroke="white" stroke-width="2"/></svg>
+                    </div>
+                    <div class="relative z-10">
+                        <p class="text-sm text-emerald-200 font-medium mb-1" data-i18n="totalBalance">Total Balance</p>
+                        <h2 class="text-4xl font-bold mb-6" id="display-balance">$0.00</h2>
+                        <div class="flex space-x-4 text-xs">
+                            <div class="bg-emerald-800/50 rounded-lg px-4 py-2.5">
+                                <span class="text-emerald-300 block" data-i18n="income">Income</span>
+                                <span class="font-bold text-white" id="display-income">$0.00</span>
+                            </div>
+                            <div class="bg-emerald-800/50 rounded-lg px-4 py-2.5">
+                                <span class="text-emerald-300 block" data-i18n="expenses">Expenses</span>
+                                <span class="font-bold text-white" id="display-expenses">$0.00</span>
+                            </div>
                         </div>
-                        <div class="bg-emerald-800/50 rounded-lg px-4 py-2.5">
-                            <span class="text-emerald-300 block" data-i18n="expenses">Expenses</span>
-                            <span class="font-bold text-white">$0.00</span>
+                    </div>
+                </div>
+
+                <!-- Stats cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-8">
+                    <div class="stat-card bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green">
+                                <i class="fas fa-piggy-bank"></i>
+                            </div>
+                            <span class="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full" id="dash-savings-count">0</span>
+                        </div>
+                        <h3 class="text-sm text-gray-500 font-medium">Savings</h3>
+                        <p class="text-xl font-bold text-gray-900 mt-1" id="dash-savings-total">$0.00</p>
+                        <div class="w-full bg-gray-100 rounded-full h-1.5 mt-3">
+                            <div class="bg-brand-green h-1.5 rounded-full" id="dash-savings-bar" style="width: 0%"></div>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1" id="dash-savings-label">No goals yet</p>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
+                                <i class="fas fa-credit-card"></i>
+                            </div>
+                            <span class="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">0 active</span>
+                        </div>
+                        <h3 class="text-sm text-gray-500 font-medium" data-i18n="activeLoans">Active Loans</h3>
+                        <p class="text-xl font-bold text-gray-900 mt-1">$0.00</p>
+                        <p class="text-xs text-gray-400 mt-2" data-i18n="nextPayment">No active loans</p>
+                    </div>
+
+                    <div class="stat-card bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <span class="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full" id="dash-inv-count">0</span>
+                        </div>
+                        <h3 class="text-sm text-gray-500 font-medium">Investments</h3>
+                        <p class="text-xl font-bold text-gray-900 mt-1" id="dash-inv-total">$0.00</p>
+                        <p class="text-xs text-gray-400 mt-2" id="dash-inv-returns">Returns: $0.00</p>
+                    </div>
+                </div>
+
+                <!-- Quick actions -->
+                <div class="max-w-md mx-auto mt-8">
+                    <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+                        <h3 class="font-bold text-gray-900 mb-5" data-i18n="quickActions">Quick Actions</h3>
+                        <div class="grid grid-cols-2 gap-3">
+                            <a onclick="switchView('transfer')" class="flex flex-col items-center p-4 rounded-xl border border-gray-100 hover:border-brand-green hover:bg-green-50 transition group cursor-pointer">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green mb-2 group-hover:bg-brand-green group-hover:text-white transition">
+                                    <i class="fas fa-plus"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-gray-600 group-hover:text-brand-green transition" data-i18n="transfer">Transfer</span>
+                            </a>
+                            <a href="#" class="flex flex-col items-center p-4 rounded-xl border border-gray-100 hover:border-brand-green hover:bg-green-50 transition group">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green mb-2 group-hover:bg-brand-green group-hover:text-white transition">
+                                    <i class="fas fa-file-invoice"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-gray-600 group-hover:text-brand-green transition" data-i18n="payBills">Pay Bills</span>
+                            </a>
+                            <a onclick="switchView('investments')" class="flex flex-col items-center p-4 rounded-xl border border-gray-100 hover:border-brand-green hover:bg-green-50 transition group cursor-pointer">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green mb-2 group-hover:bg-brand-green group-hover:text-white transition">
+                                    <i class="fas fa-chart-simple"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-gray-600 group-hover:text-brand-green transition" data-i18n="invest">Invest</span>
+                            </a>
+                            <a onclick="switchView('deposit')" class="flex flex-col items-center p-4 rounded-xl border border-gray-100 hover:border-brand-green hover:bg-green-50 transition group cursor-pointer">
+                                <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green mb-2 group-hover:bg-brand-green group-hover:text-white transition">
+                                    <i class="fas fa-download"></i>
+                                </div>
+                                <span class="text-xs font-semibold text-gray-600 group-hover:text-brand-green transition" data-i18n="deposit">Deposit</span>
+                            </a>
+                        </div>
+
+                        <hr class="my-5 border-gray-100">
+
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3" data-i18n="currencyConverter">Currency Converter</h4>
+                        <div class="space-y-2">
+                            <div class="relative">
+                                <input type="number" value="1" class="w-full pl-3 pr-14 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition bg-white">
+                                <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-xs font-semibold text-gray-500">USD</span>
+                            </div>
+                            <div class="text-center text-gray-400">
+                                <i class="fas fa-arrow-down text-xs"></i>
+                            </div>
+                            <div class="relative">
+                                <input type="text" value="€0.92" readonly class="w-full pl-3 pr-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-default">
+                                <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-xs font-semibold text-gray-500">EUR</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <!-- ==================== END DASHBOARD VIEW ==================== -->
+
+            <!-- ==================== SETTINGS VIEW ==================== -->
+            <div id="settings-view" class="view">
+
+                <!-- Sub navigation -->
+                <div class="flex border-b border-gray-200 mb-6">
+                <button onclick="showSettingsTab('profile')" class="settings-tab active" id="st-profile">Profile</button>
+                <button onclick="showSettingsTab('payment')" class="settings-tab" id="st-payment">Payment Methods</button>
+                <button onclick="showSettingsTab('security')" class="settings-tab" id="st-security">Security</button>
+                </div>
+
+                <!-- Profile Settings -->
+                <div id="settings-profile" class="settings-panel">
+                    <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm max-w-2xl">
+                        <h3 class="text-lg font-bold text-gray-900 mb-6">Profile Information</h3>
+                        <form id="profile-form" class="space-y-4" onkeydown="handleEnter(event)">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Full Name</label>
+                                <input type="text" id="prof-name" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Email</label>
+                                <input type="email" id="prof-email" readonly class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-default">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Phone</label>
+                                <input type="tel" id="prof-phone" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Street & House Number</label>
+                                <input type="text" id="prof-street" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                            </div>
+                            <div class="grid grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">Postal Code</label>
+                                    <input type="text" id="prof-postal" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">City</label>
+                                    <input type="text" id="prof-city" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">State / Region</label>
+                                    <input type="text" id="prof-state" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Country</label>
+                                <input type="text" id="prof-country" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="bg-brand-green text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-800 transition shadow-sm">Save Changes</button>
+                                <span id="profile-saved-msg" class="text-emerald-600 text-sm ml-4 hidden"><i class="fas fa-check-circle"></i> Saved successfully</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Payment Settings -->
+                <div id="settings-payment" class="settings-panel hidden">
+                    <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm max-w-2xl">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-lg font-bold text-gray-900">Payment Methods</h3>
+                        </div>
+                        <div id="saved-cards">
+                            <div id="no-cards" class="text-center py-10 text-gray-400">
+                                <i class="fas fa-credit-card text-4xl mb-3 block"></i>
+                                <p class="text-sm">No cards saved yet.</p>
+                            </div>
+                            <div id="cards-list" class="space-y-3"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Settings -->
+                <div id="settings-security" class="settings-panel hidden">
+                    <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm max-w-2xl">
+                        <h3 class="text-lg font-bold text-gray-900 mb-6">Change Password</h3>
+                        <form id="password-form" class="space-y-4" onkeydown="handleEnter(event)">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Current Password</label>
+                                <div class="relative">
+                                    <input type="password" id="sec-current-pass" class="w-full pr-10 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                    <span onclick="togglePass('sec-current-pass', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 cursor-pointer text-xs"><i class="far fa-eye-slash"></i></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">New Password</label>
+                                <div class="relative">
+                                    <input type="password" id="sec-new-pass" class="w-full pr-10 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                    <span onclick="togglePass('sec-new-pass', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 cursor-pointer text-xs"><i class="far fa-eye-slash"></i></span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Confirm New Password</label>
+                                <div class="relative">
+                                    <input type="password" id="sec-confirm-pass" class="w-full pr-10 px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                    <span onclick="togglePass('sec-confirm-pass', this)" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 cursor-pointer text-xs"><i class="far fa-eye-slash"></i></span>
+                                </div>
+                            </div>
+                            <div class="pt-2">
+                                <button type="submit" class="bg-brand-green text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-800 transition shadow-sm">Update Password</button>
+                                <span id="password-saved-msg" class="text-emerald-600 text-sm ml-4 hidden"><i class="fas fa-check-circle"></i> Password changed successfully</span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+            <!-- ==================== END SETTINGS VIEW ==================== -->
+
+            <!-- ==================== DEPOSIT VIEW ==================== -->
+            <div id="deposit-view" class="view">
+                <div class="max-w-lg mx-auto">
+                    <div class="bg-white rounded-xl border border-gray-100 p-8 shadow-sm">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">Deposit Funds</h3>
+                                <p class="text-xs text-gray-400">Add money to your wallet</p>
+                            </div>
+                        </div>
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                            <p class="text-xs text-gray-500">Available Balance</p>
+                            <p class="text-2xl font-bold text-gray-900" id="deposit-balance">$0.00</p>
+                        </div>
+
+                        <div class="mb-6">
+                            <label class="block text-sm font-semibold text-gray-600 mb-3">Select Debit Card</label>
+                            <div id="deposit-cards" class="space-y-2">
+                                <div id="no-deposit-cards" class="text-center py-6 text-gray-400 border border-dashed border-gray-200 rounded-lg">
+                                    <i class="fas fa-credit-card text-2xl mb-2 block"></i>
+                                    <p class="text-xs">No cards saved. <a href="#" onclick="switchView('settings'); showSettingsTab('payment'); return false;" class="text-brand-green underline">Add a card</a></p>
+                                </div>
+                            </div>
+                            <input type="hidden" id="deposit-selected-card" value="">
+                        </div>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Amount</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-bold text-sm">$</span>
+                                    <input type="number" id="deposit-amount" min="1" step="0.01" placeholder="0.00" class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg text-lg font-bold focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                <button onclick="setDepositAmount(100)" class="flex-1 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:border-brand-green hover:text-brand-green transition">$100</button>
+                                <button onclick="setDepositAmount(500)" class="flex-1 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:border-brand-green hover:text-brand-green transition">$500</button>
+                                <button onclick="setDepositAmount(1000)" class="flex-1 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:border-brand-green hover:text-brand-green transition">$1,000</button>
+                                <button onclick="setDepositAmount(5000)" class="flex-1 py-2 border border-gray-200 rounded-lg text-sm font-medium text-gray-600 hover:border-brand-green hover:text-brand-green transition">$5,000</button>
+                            </div>
+                            <button onclick="handleDeposit()" class="w-full bg-brand-green text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-emerald-800 transition cursor-pointer">Deposit</button>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- ==================== END DEPOSIT VIEW ==================== -->
 
-            <!-- Stats cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-                <div class="stat-card bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                    <div class="flex items-center justify-between mb-3">
+            <!-- ==================== WITHDRAW VIEW ==================== -->
+            <div id="withdraw-view" class="view">
+                <div class="max-w-lg mx-auto">
+                    <div class="bg-white rounded-xl border border-gray-100 p-8 shadow-sm">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center text-red-500">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">Withdraw Funds</h3>
+                                <p class="text-xs text-gray-400">Transfer money out of your wallet</p>
+                            </div>
+                        </div>
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                            <p class="text-xs text-gray-500">Available Balance</p>
+                            <p class="text-2xl font-bold text-gray-900" id="withdraw-balance">$0.00</p>
+                        </div>
+
+                        <!-- Bank Details -->
+                        <div class="border-t border-gray-100 pt-6 mt-6">
+                            <h4 class="text-sm font-bold text-gray-800 mb-4">Bank Account Details</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">Country</label>
+                                    <select id="wd-country" onchange="updateBankFields()" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition bg-white appearance-none cursor-pointer"></select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">Account Holder Name</label>
+                                    <input type="text" id="wd-holder" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div id="bank-field-bank_name" class="hidden">
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">Bank Name</label>
+                                    <input type="text" id="wd-bank_name" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div id="bank-field-routing_number" class="hidden">
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">Routing Number</label>
+                                    <input type="text" id="wd-routing_number" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div id="bank-field-sort_code" class="hidden">
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">Sort Code</label>
+                                    <input type="text" id="wd-sort_code" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div id="bank-field-iban" class="hidden">
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">IBAN</label>
+                                    <input type="text" id="wd-iban" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div id="bank-field-swift" class="hidden">
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">SWIFT / BIC</label>
+                                    <input type="text" id="wd-swift" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div id="bank-field-agency" class="hidden">
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">Agency</label>
+                                    <input type="text" id="wd-agency" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                                <div id="bank-field-account_number">
+                                    <label class="block text-sm font-semibold text-gray-600 mb-1.5">Account Number</label>
+                                    <input type="text" id="wd-account_number" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4 mt-6">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Amount</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-bold text-sm">$</span>
+                                    <input type="number" id="withdraw-amount" min="1" step="0.01" placeholder="0.00" class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg text-lg font-bold focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                            </div>
+                            <button onclick="handleWithdraw()" class="w-full bg-red-500 text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-red-600 transition cursor-pointer">Withdraw</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ==================== END WITHDRAW VIEW ==================== -->
+
+            <!-- ==================== TRANSFER VIEW ==================== -->
+            <div id="transfer-view" class="view">
+                <div class="max-w-lg mx-auto">
+                    <div class="bg-white rounded-xl border border-gray-100 p-8 shadow-sm">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                                <i class="fas fa-exchange-alt"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-900">Transfer Money</h3>
+                                <p class="text-xs text-gray-400">Send money to another user</p>
+                            </div>
+                        </div>
+                        <div class="mb-6 p-4 bg-gray-50 rounded-lg">
+                            <p class="text-xs text-gray-500">Available Balance</p>
+                            <p class="text-2xl font-bold text-gray-900" id="transfer-balance">$0.00</p>
+                        </div>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Recipient Email</label>
+                                <input type="email" id="transfer-email" placeholder="user@example.com" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Amount</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-bold text-sm">$</span>
+                                    <input type="number" id="transfer-amount" min="1" step="0.01" placeholder="0.00" class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg text-lg font-bold focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                            </div>
+                            <button onclick="handleTransfer()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-blue-700 transition cursor-pointer">Send Money</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ==================== END TRANSFER VIEW ==================== -->
+
+            <!-- ==================== INVESTMENTS VIEW ==================== -->
+            <div id="investments-view" class="view">
+                <div class="max-w-2xl mx-auto">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Investments</h3>
+                            <p class="text-xs text-gray-400">Earn 2% daily returns on your investments</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-4 mb-8">
+                        <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm text-center">
+                            <p class="text-xs text-gray-500 mb-1">Total Invested</p>
+                            <p class="text-lg font-bold text-gray-900" id="inv-total-invested">$0.00</p>
+                        </div>
+                        <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm text-center">
+                            <p class="text-xs text-gray-500 mb-1">Total Returns</p>
+                            <p class="text-lg font-bold text-green-600" id="inv-total-returns">$0.00</p>
+                        </div>
+                        <div class="bg-white rounded-xl border border-gray-100 p-4 shadow-sm text-center">
+                            <p class="text-xs text-gray-500 mb-1">Active Plans</p>
+                            <p class="text-lg font-bold text-gray-900" id="inv-active-count">0</p>
+                        </div>
+                    </div>
+
+                    <div id="inv-list" class="space-y-3 mb-8">
+                        <div id="no-investments" class="text-center py-10 text-gray-400 bg-white rounded-xl border border-gray-100">
+                            <i class="fas fa-chart-line text-4xl mb-3 block"></i>
+                            <p class="text-sm">No investments yet.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+                        <h4 class="text-sm font-bold text-gray-800 mb-4">Start New Investment</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Amount</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-bold text-sm">$</span>
+                                    <input type="number" id="invest-amount" min="1" step="0.01" placeholder="0.00" class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg text-lg font-bold focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-400">You will earn <strong>2%</strong> of your investment every 24 hours.</p>
+                            <button onclick="handleInvest()" class="w-full bg-brand-green text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-emerald-800 transition cursor-pointer">Invest Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ==================== END INVESTMENTS VIEW ==================== -->
+
+            <!-- ==================== TRANSACTIONS VIEW ==================== -->
+            <div id="transactions-view" class="view">
+                <div class="max-w-3xl mx-auto">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Transaction History</h3>
+                            <p class="text-xs text-gray-400">All your deposits and withdrawals</p>
+                        </div>
+                    </div>
+                    <div id="transactions-list" class="space-y-2">
+                        <div id="no-transactions" class="text-center py-16 text-gray-400">
+                            <i class="fas fa-receipt text-4xl mb-3 block"></i>
+                            <p class="text-sm">No transactions yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ==================== END TRANSACTIONS VIEW ==================== -->
+
+            <!-- ==================== LOANS VIEW ==================== -->
+            <div id="loans-view" class="view">
+                <div class="max-w-lg mx-auto text-center py-20">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-hand-holding-usd text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Loans</h3>
+                    <p class="text-gray-400 text-sm">You are not available for loan at the moment.</p>
+                </div>
+            </div>
+            <!-- ==================== END LOANS VIEW ==================== -->
+
+            <!-- ==================== SAVINGS VIEW ==================== -->
+            <div id="savings-view" class="view">
+                <div class="max-w-3xl mx-auto">
+                    <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green">
                             <i class="fas fa-piggy-bank"></i>
                         </div>
-                        <span class="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">0%</span>
-                    </div>
-                    <h3 class="text-sm text-gray-500 font-medium" data-i18n="savingsGoal">Savings Goal</h3>
-                    <p class="text-xl font-bold text-gray-900 mt-1">$0.00</p>
-                    <div class="w-full bg-gray-100 rounded-full h-1.5 mt-3">
-                        <div class="bg-gray-200 h-1.5 rounded-full" style="width: 0%"></div>
-                    </div>
-                    <p class="text-xs text-gray-400 mt-1" data-i18n="goalProgress">No goal set</p>
-                </div>
-
-                <div class="stat-card bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
-                            <i class="fas fa-chart-pie"></i>
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Savings Goals</h3>
+                            <p class="text-xs text-gray-400">Set goals and save toward them</p>
                         </div>
-                        <span class="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">--</span>
                     </div>
-                    <h3 class="text-sm text-gray-500 font-medium" data-i18n="investmentsGrowth">Investments</h3>
-                    <p class="text-xl font-bold text-gray-900 mt-1">$0.00</p>
-                    <p class="text-xs text-gray-400 mt-2" data-i18n="investmentReturn">No investments yet</p>
-                </div>
 
-                <div class="stat-card bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
-                            <i class="fas fa-credit-card"></i>
+                    <div id="savings-list" class="space-y-4 mb-8">
+                        <div id="no-savings" class="text-center py-16 text-gray-400 bg-white rounded-xl border border-gray-100">
+                            <i class="fas fa-piggy-bank text-4xl mb-3 block"></i>
+                            <p class="text-sm">No savings goals yet. Create one below!</p>
                         </div>
-                        <span class="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">0 active</span>
                     </div>
-                    <h3 class="text-sm text-gray-500 font-medium" data-i18n="activeLoans">Active Loans</h3>
-                    <p class="text-xl font-bold text-gray-900 mt-1">$0.00</p>
-                    <p class="text-xs text-gray-400 mt-2" data-i18n="nextPayment">No active loans</p>
-                </div>
 
-                <div class="stat-card bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-orange-600">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <span class="text-xs text-gray-400 font-semibold bg-gray-100 px-2 py-0.5 rounded-full">Inactive</span>
+                    <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm max-w-lg">
+                        <h4 class="text-sm font-bold text-gray-800 mb-4">Create New Goal</h4>
+                        <form id="savings-form" class="space-y-4" onsubmit="handleCreateGoal(event)">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Goal Name</label>
+                                <input type="text" id="savings-name" placeholder="e.g. Emergency Fund, Vacation" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-600 mb-1.5">Target Amount</label>
+                                <div class="relative">
+                                    <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 font-bold text-sm">$</span>
+                                    <input type="number" id="savings-target" min="1" step="0.01" placeholder="0.00" class="w-full pl-8 pr-4 py-3 border border-gray-200 rounded-lg text-lg font-bold focus:outline-none focus:border-emerald-600 transition">
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-brand-green text-white py-3 rounded-xl font-medium text-sm shadow-md hover:bg-emerald-800 transition">Create Goal</button>
+                        </form>
                     </div>
-                    <h3 class="text-sm text-gray-500 font-medium" data-i18n="insuranceCoverage">Insurance</h3>
-                    <p class="text-xl font-bold text-gray-900 mt-1" data-i18n="noCoverage">No Coverage</p>
-                    <p class="text-xs text-gray-400 mt-2" data-i18n="coverageType">Not enrolled</p>
                 </div>
             </div>
 
-            <!-- Quick actions -->
-            <div class="max-w-md mx-auto mt-8">
-
-                <!-- Quick actions -->
-                <div class="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-                    <h3 class="font-bold text-gray-900 mb-5" data-i18n="quickActions">Quick Actions</h3>
-                    <div class="grid grid-cols-2 gap-3">
-                        <a href="#" class="flex flex-col items-center p-4 rounded-xl border border-gray-100 hover:border-brand-green hover:bg-green-50 transition group">
-                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green mb-2 group-hover:bg-brand-green group-hover:text-white transition">
-                                <i class="fas fa-plus"></i>
-                            </div>
-                            <span class="text-xs font-semibold text-gray-600 group-hover:text-brand-green transition" data-i18n="transfer">Transfer</span>
-                        </a>
-                        <a href="#" class="flex flex-col items-center p-4 rounded-xl border border-gray-100 hover:border-brand-green hover:bg-green-50 transition group">
-                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green mb-2 group-hover:bg-brand-green group-hover:text-white transition">
-                                <i class="fas fa-file-invoice"></i>
-                            </div>
-                            <span class="text-xs font-semibold text-gray-600 group-hover:text-brand-green transition" data-i18n="payBills">Pay Bills</span>
-                        </a>
-                        <a href="#" class="flex flex-col items-center p-4 rounded-xl border border-gray-100 hover:border-brand-green hover:bg-green-50 transition group">
-                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green mb-2 group-hover:bg-brand-green group-hover:text-white transition">
-                                <i class="fas fa-chart-simple"></i>
-                            </div>
-                            <span class="text-xs font-semibold text-gray-600 group-hover:text-brand-green transition" data-i18n="invest">Invest</span>
-                        </a>
-                        <a href="#" class="flex flex-col items-center p-4 rounded-xl border border-gray-100 hover:border-brand-green hover:bg-green-50 transition group">
-                            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-brand-green mb-2 group-hover:bg-brand-green group-hover:text-white transition">
-                                <i class="fas fa-download"></i>
-                            </div>
-                            <span class="text-xs font-semibold text-gray-600 group-hover:text-brand-green transition" data-i18n="deposit">Deposit</span>
-                        </a>
-                    </div>
-
-<hr class="my-5 border-gray-100">
-
-                    <h4 class="text-sm font-semibold text-gray-700 mb-3" data-i18n="currencyConverter">Currency Converter</h4>
-                    <div class="space-y-2">
-                        <div class="relative">
-                            <input type="number" value="1" class="w-full pl-3 pr-14 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition bg-white">
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-xs font-semibold text-gray-500">USD</span>
-                        </div>
-                        <div class="text-center text-gray-400">
-                            <i class="fas fa-arrow-down text-xs"></i>
-                        </div>
-                        <div class="relative">
-                            <input type="text" value="€0.92" readonly class="w-full pl-3 pr-3 py-2 border border-gray-200 rounded-lg text-sm bg-gray-50 text-gray-500 cursor-default">
-                            <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-xs font-semibold text-gray-500">EUR</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            </main>
+        </main>
 
         <!-- Footer -->
         <footer class="bg-brand-dark-green text-white py-6">
@@ -246,9 +654,14 @@
 
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+    <script src="supabase-config.js"></script>
+    <script src="supabase.js?v=4"></script>
     <script src="languages.js"></script>
     <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    let currentUser = null;
+
+    document.addEventListener("DOMContentLoaded", async function() {
         const saved = getSelectedCountry();
         if (!saved) {
             buildCountryOverlay();
@@ -257,7 +670,698 @@
             buildCountryOverlay();
             applyTranslation(saved);
         }
+
+        const user = await initAuth();
+        if (!user) {
+            window.location.href = "signin.html";
+            return;
+        }
+        currentUser = user;
+        renderUser(user);
+        loadProfileForm(user);
+        await loadCards();
+
+        document.getElementById("profile-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            await saveProfile();
+        });
+        document.getElementById("password-form").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            await changePassword();
+        });
     });
+
+    const CURRENCY_MAP = {
+        us: { symbol: '$', code: 'USD' }, gb: { symbol: '£', code: 'GBP' },
+        de: { symbol: '€', code: 'EUR' }, fr: { symbol: '€', code: 'EUR' },
+        es: { symbol: '€', code: 'EUR' }, it: { symbol: '€', code: 'EUR' },
+        ng: { symbol: '₦', code: 'NGN' }, br: { symbol: 'R$', code: 'BRL' }
+    };
+
+    function getCurrency() {
+        const code = localStorage.getItem('green_global_country') || 'us';
+        return CURRENCY_MAP[code] || CURRENCY_MAP.us;
+    }
+
+    function formatMoney(n) {
+        const cur = getCurrency();
+        return cur.symbol + parseFloat(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function updateBalanceDisplay(user) {
+        const balance = user.balance || 0;
+        document.getElementById("display-balance").textContent = formatMoney(balance);
+        document.getElementById("deposit-balance").textContent = formatMoney(balance);
+        document.getElementById("withdraw-balance").textContent = formatMoney(balance);
+        const tb = document.getElementById("transfer-balance");
+        if (tb) tb.textContent = formatMoney(balance);
+    }
+
+    function renderUser(user) {
+        if (!user) return;
+        document.getElementById("userName").textContent = user.name;
+        document.getElementById("userEmail").textContent = user.email;
+        document.getElementById("userInitials").textContent = getUserInitials(user.name);
+        const welcomeEl = document.getElementById("welcomeSub");
+        if (welcomeEl) {
+            welcomeEl.textContent = "Welcome back, " + user.name.split(" ")[0] + "! Here's your financial overview.";
+        }
+        updateBalanceDisplay(user);
+    }
+
+    function switchView(view) {
+        document.querySelectorAll(".view").forEach(v => v.classList.remove("active"));
+        document.getElementById(view + "-view").classList.add("active");
+        document.querySelectorAll(".sidebar-item").forEach(i => i.classList.remove("active"));
+        document.querySelectorAll('.sidebar-item').forEach(i => {
+            if (i.getAttribute("onclick") && i.getAttribute("onclick").includes("'" + view + "'")) {
+                i.classList.add("active");
+            }
+        });
+        if (view === "settings") {
+            loadProfileForm(currentUser);
+            loadCards();
+        }
+        if (view === "deposit") {
+            refreshBalance();
+            loadDepositCards();
+        }
+        if (view === "withdraw" || view === "transfer" || view === "investments" || view === "dashboard") {
+            refreshBalance();
+        }
+        if (view === "withdraw") {
+            populateWithdrawCountries();
+            loadBankDetails();
+        }
+        if (view === "investments") {
+            loadInvestments();
+        }
+        if (view === "transactions") {
+            loadTransactions();
+        }
+        if (view === "savings") {
+            loadSavingsGoals();
+        }
+    }
+
+    async function refreshBalance() {
+        const balance = await getBalance();
+        if (currentUser) currentUser.balance = balance;
+        updateBalanceDisplay(currentUser || { balance: 0 });
+        const txs = await getTransactions();
+        let income = 0, expenses = 0;
+        txs.forEach(tx => {
+            if (tx.type === 'deposit' || tx.type === 'savings_withdraw') income += parseFloat(tx.amount);
+            else if (tx.type !== 'investment_return') expenses += parseFloat(tx.amount);
+        });
+        document.getElementById("display-income").textContent = formatMoney(income);
+        document.getElementById("display-expenses").textContent = formatMoney(expenses);
+        const invs = await getInvestments();
+        let totalInv = 0, totalRet = 0, active = 0;
+        invs.forEach(inv => {
+            totalInv += parseFloat(inv.amount);
+            totalRet += parseFloat(inv.total_returned);
+            if (inv.status === 'active') active++;
+        });
+        document.getElementById("dash-inv-total").textContent = formatMoney(totalInv);
+        document.getElementById("dash-inv-returns").textContent = 'Returns: ' + formatMoney(totalRet);
+        document.getElementById("dash-inv-count").textContent = active;
+        const savGoals = await getSavingsGoals();
+        let totalSaved = 0, goalCount = 0;
+        savGoals.forEach(g => {
+            totalSaved += parseFloat(g.saved_amount);
+            if (parseFloat(g.target_amount) > 0) goalCount++;
+        });
+        document.getElementById("dash-savings-total").textContent = formatMoney(totalSaved);
+        document.getElementById("dash-savings-count").textContent = savGoals.length;
+        let pct = 0;
+        if (savGoals.length > 0) {
+            const firstGoal = savGoals[0];
+            pct = Math.min(100, (parseFloat(firstGoal.saved_amount) / parseFloat(firstGoal.target_amount)) * 100);
+            document.getElementById("dash-savings-label").textContent = firstGoal.name + ' — ' + pct.toFixed(1) + '%';
+        } else {
+            document.getElementById("dash-savings-label").textContent = 'No goals yet';
+        }
+        document.getElementById("dash-savings-bar").style.width = pct + '%';
+    }
+
+    async function loadTransactions() {
+        const list = document.getElementById("transactions-list");
+        const noTx = document.getElementById("no-transactions");
+        try {
+            const txs = await getTransactions();
+            list.innerHTML = "";
+            if (txs.length === 0) {
+                list.appendChild(noTx);
+                return;
+            }
+            txs.forEach(tx => {
+                const isDeposit = tx.type === 'deposit';
+                const isTransfer = tx.type === 'transfer';
+                const isSavings = tx.type === 'savings';
+                const isSavingsW = tx.type === 'savings_withdraw';
+                let icon, bgClass, label, sign, color;
+                if (isDeposit) {
+                    icon = 'fa-arrow-down'; bgClass = 'bg-green-100 text-brand-green'; label = 'Deposit'; sign = '+'; color = 'text-green-600';
+                } else if (isTransfer) {
+                    icon = 'fa-exchange-alt'; bgClass = 'bg-blue-100 text-blue-600'; label = 'Transfer'; sign = '-'; color = 'text-blue-600';
+                } else if (isSavings) {
+                    icon = 'fa-piggy-bank'; bgClass = 'bg-purple-100 text-purple-600'; label = 'Savings Deposit'; sign = '-'; color = 'text-purple-600';
+                } else if (isSavingsW) {
+                    icon = 'fa-piggy-bank'; bgClass = 'bg-purple-100 text-purple-600'; label = 'Savings Withdrawal'; sign = '+'; color = 'text-purple-600';
+                } else {
+                    icon = 'fa-arrow-up'; bgClass = 'bg-red-100 text-red-500'; label = 'Withdraw'; sign = '-'; color = 'text-red-500';
+                }
+                const desc = tx.description ? '<p class="text-xs text-gray-500 mt-0.5">' + tx.description + '</p>' : '';
+                const div = document.createElement("div");
+                div.className = "flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm";
+                div.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 ${bgClass} rounded-lg flex items-center justify-center">
+                            <i class="fas ${icon}"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">${label}</p>
+                            ${desc}
+                            <p class="text-xs text-gray-400">${new Date(tx.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</p>
+                        </div>
+                    </div>
+                    <p class="text-sm font-bold ${color}">${sign}$${parseFloat(tx.amount).toLocaleString('en-US', { minimumFractionDigits: 2 })}</p>
+                `;
+                list.appendChild(div);
+            });
+        } catch (err) {
+            console.error("Failed to load transactions:", err);
+        }
+    }
+
+    function showSettingsTab(tab) {
+        document.querySelectorAll(".settings-tab").forEach(t => t.classList.remove("active"));
+        document.querySelectorAll(".settings-panel").forEach(p => p.classList.add("hidden"));
+        document.getElementById("st-" + tab).classList.add("active");
+        document.getElementById("settings-" + tab).classList.remove("hidden");
+    }
+
+    function loadProfileForm(user) {
+        if (!user) return;
+        document.getElementById("prof-name").value = user.name || "";
+        document.getElementById("prof-email").value = user.email || "";
+        document.getElementById("prof-phone").value = user.phone || "";
+        document.getElementById("prof-street").value = user.street || "";
+        document.getElementById("prof-postal").value = user.postal_code || "";
+        document.getElementById("prof-city").value = user.city || "";
+        document.getElementById("prof-state").value = user.state || "";
+        document.getElementById("prof-country").value = user.country || "";
+    }
+
+    async function saveProfile() {
+        const name = document.getElementById("prof-name").value.trim();
+        const phone = document.getElementById("prof-phone").value.trim();
+        const street = document.getElementById("prof-street").value.trim();
+        const postal = document.getElementById("prof-postal").value.trim();
+        const city = document.getElementById("prof-city").value.trim();
+        const state = document.getElementById("prof-state").value.trim();
+        const country = document.getElementById("prof-country").value.trim();
+
+        if (!name) { alert("Name is required."); return; }
+
+        try {
+            await updateProfile({
+                full_name: name,
+                phone: phone,
+                street: street,
+                postal_code: postal,
+                city: city,
+                state: state,
+                country: country
+            });
+            const msg = document.getElementById("profile-saved-msg");
+            msg.classList.remove("hidden");
+            setTimeout(() => msg.classList.add("hidden"), 3000);
+            currentUser.name = name;
+            currentUser.phone = phone;
+            currentUser.street = street;
+            currentUser.postal_code = postal;
+            currentUser.city = city;
+            currentUser.state = state;
+            currentUser.country = country;
+            renderUser(currentUser);
+        } catch (err) {
+            alert(err.message || "Failed to save profile.");
+        }
+    }
+
+    async function loadCards() {
+        const list = document.getElementById("cards-list");
+        const noCards = document.getElementById("no-cards");
+        list.innerHTML = "";
+        try {
+            const cards = await getCards();
+            if (cards.length === 0) {
+                noCards.classList.remove("hidden");
+                return;
+            }
+            noCards.classList.add("hidden");
+            cards.forEach(card => {
+                const icons = { visa: "fab fa-cc-visa", mastercard: "fab fa-cc-mastercard", amex: "fab fa-cc-amex", discover: "fab fa-cc-discover" };
+                const icon = icons[card.card_type] || "fas fa-credit-card";
+                const label = card.card_type.charAt(0).toUpperCase() + card.card_type.slice(1);
+                const div = document.createElement("div");
+                div.className = "flex items-center justify-between p-4 border border-gray-100 rounded-lg";
+                div.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="text-2xl text-gray-600 w-10 text-center"><i class="${icon}"></i></div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">${label} **** ${card.last_four}</p>
+                            <p class="text-xs text-gray-400">${card.cardholder_name} &middot; Expires ${card.expiry_month}/${card.expiry_year.slice(2)}</p>
+                        </div>
+                    </div>
+                    <button onclick="removeCard('${card.id}')" class="text-red-400 hover:text-red-600 transition text-sm"><i class="fas fa-trash-alt"></i></button>
+                `;
+                list.appendChild(div);
+            });
+        } catch (err) {
+            console.error("Failed to load cards:", err);
+        }
+    }
+
+    async function removeCard(cardId) {
+        if (!confirm("Remove this card?")) return;
+        try {
+            await deleteCard(cardId);
+            await loadCards();
+        } catch (err) {
+            alert(err.message || "Failed to delete card.");
+        }
+    }
+
+    function handleEnter(e) {
+        if (e.key !== 'Enter') return;
+        const tag = e.target.tagName;
+        if (tag !== 'INPUT') return;
+        e.preventDefault();
+        const form = e.target.closest('form');
+        const inputs = form.querySelectorAll('input:not([type="checkbox"]):not([readonly]), button[type="submit"]');
+        const idx = Array.from(inputs).indexOf(e.target);
+        if (idx < inputs.length - 1) {
+            inputs[idx + 1].focus();
+        } else {
+            form.querySelector('button[type="submit"]')?.click();
+        }
+    }
+
+    function togglePass(id, el) {
+        const input = document.getElementById(id);
+        const icon = el.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.className = 'far fa-eye';
+        } else {
+            input.type = 'password';
+            icon.className = 'far fa-eye-slash';
+        }
+    }
+
+    async function changePassword() {
+        const current = document.getElementById("sec-current-pass").value;
+        const newPass = document.getElementById("sec-new-pass").value;
+        const confirm = document.getElementById("sec-confirm-pass").value;
+
+        if (!current || !newPass || !confirm) {
+            alert("Please fill in all password fields.");
+            return;
+        }
+        if (newPass.length < 6) {
+            alert("New password must be at least 6 characters.");
+            return;
+        }
+        if (newPass !== confirm) {
+            alert("New passwords do not match.");
+            return;
+        }
+
+        try {
+            const { error } = await getClient().auth.updateUser({ password: newPass });
+            if (error) throw error;
+            document.getElementById("sec-current-pass").value = "";
+            document.getElementById("sec-new-pass").value = "";
+            document.getElementById("sec-confirm-pass").value = "";
+            const msg = document.getElementById("password-saved-msg");
+            msg.classList.remove("hidden");
+            setTimeout(() => msg.classList.add("hidden"), 3000);
+        } catch (err) {
+            alert(err.message || "Failed to change password.");
+        }
+    }
+
+    function populateWithdrawCountries() {
+        const sel = document.getElementById("wd-country");
+        sel.innerHTML = '<option value="">Select country</option>';
+        COUNTRIES.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c.code;
+            opt.textContent = c.flag + " " + c.name;
+            sel.appendChild(opt);
+        });
+    }
+
+    const BANK_FIELDS = {
+        us: { show: ["routing_number", "account_number"], labels: {} },
+        gb: { show: ["sort_code", "account_number"], labels: {} },
+        de: { show: ["iban", "swift"], labels: {} },
+        fr: { show: ["iban", "swift"], labels: {} },
+        es: { show: ["iban", "swift"], labels: {} },
+        it: { show: ["iban", "swift"], labels: {} },
+        ng: { show: ["bank_name", "account_number"], labels: {} },
+        br: { show: ["bank_name", "agency", "account_number"], labels: {} }
+    };
+
+    function updateBankFields() {
+        const country = document.getElementById("wd-country").value;
+        const fields = ["bank_name", "routing_number", "sort_code", "iban", "swift", "agency", "account_number"];
+        fields.forEach(f => document.getElementById("bank-field-" + f).classList.add("hidden"));
+        if (!country) return;
+        const cfg = BANK_FIELDS[country] || { show: ["bank_name", "account_number", "swift"] };
+        cfg.show.forEach(f => document.getElementById("bank-field-" + f).classList.remove("hidden"));
+    }
+
+    async function loadBankDetails() {
+        try {
+            const details = await getBankDetails();
+            if (!details) return;
+            document.getElementById("wd-country").value = details.country || "";
+            document.getElementById("wd-holder").value = details.account_holder || "";
+            document.getElementById("wd-bank_name").value = details.bank_name || "";
+            document.getElementById("wd-routing_number").value = details.routing_number || "";
+            document.getElementById("wd-sort_code").value = details.sort_code || "";
+            document.getElementById("wd-iban").value = details.iban || "";
+            document.getElementById("wd-swift").value = details.swift || "";
+            document.getElementById("wd-agency").value = details.agency || "";
+            document.getElementById("wd-account_number").value = details.account_number || "";
+            updateBankFields();
+        } catch (e) {}
+    }
+
+    function setDepositAmount(amount) {
+        document.getElementById("deposit-amount").value = amount;
+    }
+
+    async function loadDepositCards() {
+        const container = document.getElementById("deposit-cards");
+        const noCards = document.getElementById("no-deposit-cards");
+        try {
+            const cards = await getCards();
+            container.innerHTML = "";
+            if (cards.length === 0) {
+                container.appendChild(noCards);
+                return;
+            }
+            cards.forEach(card => {
+                const icons = { visa: "fab fa-cc-visa", mastercard: "fab fa-cc-mastercard", amex: "fab fa-cc-amex", discover: "fab fa-cc-discover" };
+                const icon = icons[card.card_type] || "fas fa-credit-card";
+                const label = card.card_type.charAt(0).toUpperCase() + card.card_type.slice(1);
+                const div = document.createElement("div");
+                div.className = "deposit-card flex items-center justify-between p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-brand-green hover:bg-green-50 transition";
+                div.dataset.cardId = card.id;
+                div.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="text-xl text-gray-600 w-8 text-center"><i class="${icon}"></i></div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800">${label} **** ${card.last_four}</p>
+                            <p class="text-xs text-gray-400">${card.cardholder_name} &middot; Expires ${card.expiry_month}/${card.expiry_year.slice(2)}</p>
+                        </div>
+                    </div>
+                    <div class="deposit-card-check w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                        <i class="fas fa-check text-white text-xs hidden"></i>
+                    </div>
+                `;
+                div.addEventListener("click", function() {
+                    document.querySelectorAll(".deposit-card").forEach(c => {
+                        c.classList.remove("border-brand-green", "bg-green-50");
+                        c.querySelector(".deposit-card-check").classList.remove("bg-brand-green", "border-brand-green");
+                        c.querySelector(".deposit-card-check i").classList.add("hidden");
+                    });
+                    this.classList.add("border-brand-green", "bg-green-50");
+                    const check = this.querySelector(".deposit-card-check");
+                    check.classList.add("bg-brand-green", "border-brand-green");
+                    check.querySelector("i").classList.remove("hidden");
+                    document.getElementById("deposit-selected-card").value = this.dataset.cardId;
+                });
+                container.appendChild(div);
+            });
+        } catch (err) {
+            console.error("Failed to load deposit cards:", err);
+        }
+    }
+
+    async function handleDeposit() {
+        const amount = parseFloat(document.getElementById("deposit-amount").value);
+        if (!amount || amount <= 0) { alert("Enter a valid amount."); return; }
+        const cardId = document.getElementById("deposit-selected-card").value;
+        if (!cardId) { alert("Please select a debit card."); return; }
+        try {
+            const cards = await getCards();
+            const card = cards.find(c => c.id === cardId);
+            const cardLabel = card ? card.card_type.toUpperCase() + ' **** ' + card.last_four : 'Card';
+            await deposit(amount, 'Deposit from ' + cardLabel);
+            alert("Deposit of " + formatMoney(amount) + " from " + cardLabel + " successful!");
+            document.getElementById("deposit-amount").value = "";
+            document.getElementById("deposit-selected-card").value = "";
+            document.querySelectorAll(".deposit-card").forEach(c => {
+                c.classList.remove("border-brand-green", "bg-green-50");
+                c.querySelector(".deposit-card-check").classList.remove("bg-brand-green", "border-brand-green");
+                c.querySelector(".deposit-card-check i").classList.add("hidden");
+            });
+            await refreshBalance();
+            switchView('dashboard');
+        } catch (err) {
+            alert(err.message || "Deposit failed.");
+        }
+    }
+
+    async function loadInvestments() {
+        const list = document.getElementById("inv-list");
+        const noInv = document.getElementById("no-investments");
+        try {
+            const invs = await getInvestments();
+            list.innerHTML = "";
+            let totalInvested = 0, totalReturns = 0, activeCount = 0;
+            if (invs.length === 0) {
+                list.appendChild(noInv);
+            } else {
+                invs.forEach(inv => {
+                    totalInvested += parseFloat(inv.amount);
+                    totalReturns += parseFloat(inv.total_returned);
+                    if (inv.status === 'active') activeCount++;
+                    const hoursSince = (new Date() - new Date(inv.last_payout)) / 3600000;
+                    const hoursLeft = Math.max(0, 24 - hoursSince);
+                    const canClaim = hoursSince >= 24;
+                    const div = document.createElement("div");
+                    div.className = "bg-white rounded-xl border border-gray-100 p-4 shadow-sm";
+                    div.innerHTML = `
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-sm font-semibold text-gray-800">${formatMoney(inv.amount)} @ ${inv.daily_rate}% daily</p>
+                            <span class="text-xs px-2 py-0.5 rounded-full ${inv.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}">${inv.status}</span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+                            <span>Returned: <strong class="text-green-600">${formatMoney(inv.total_returned)}</strong></span>
+                            <span>Started: ${new Date(inv.created_at).toLocaleDateString()}</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            ${canClaim && inv.status === 'active' ? `<button onclick="claimInvestReturn('${inv.id}')" class="text-xs bg-brand-green text-white px-4 py-1.5 rounded-lg hover:bg-emerald-800 transition">Claim Returns</button>` : `<span class="text-xs text-gray-400">Next claim in ${Math.floor(hoursLeft)}h ${Math.floor((hoursLeft % 1) * 60)}m</span>`}
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            }
+            document.getElementById("inv-total-invested").textContent = formatMoney(totalInvested);
+            document.getElementById("inv-total-returns").textContent = formatMoney(totalReturns);
+            document.getElementById("inv-active-count").textContent = activeCount;
+        } catch (err) { console.error("Failed to load investments:", err); }
+    }
+
+    async function claimInvestReturn(id) {
+        try {
+            const result = await claimReturns(id);
+            alert("Claimed " + formatMoney(result.returned) + " in returns!");
+            await refreshBalance();
+            loadInvestments();
+        } catch (err) {
+            alert(err.message || "Failed to claim returns.");
+        }
+    }
+
+    async function handleInvest() {
+        const amount = parseFloat(document.getElementById("invest-amount").value);
+        if (!amount || amount <= 0) { alert("Enter a valid amount."); return; }
+        if (amount > (currentUser?.balance || 0)) { alert("Insufficient balance."); return; }
+        try {
+            await investMoney(amount);
+            alert("Investment of " + formatMoney(amount) + " successful! You will earn 2% every 24 hours.");
+            document.getElementById("invest-amount").value = "";
+            await refreshBalance();
+            loadInvestments();
+        } catch (err) {
+            alert(err.message || "Investment failed.");
+        }
+    }
+
+    async function handleTransfer() {
+        const email = document.getElementById("transfer-email").value.trim();
+        const amount = parseFloat(document.getElementById("transfer-amount").value);
+        if (!email) { alert("Enter the recipient email."); return; }
+        if (!amount || amount <= 0) { alert("Enter a valid amount."); return; }
+        if (amount > (currentUser?.balance || 0)) { alert("Insufficient balance."); return; }
+        if (!confirm("Send " + formatMoney(amount) + " to " + email + "?")) return;
+        try {
+            await transferMoney(email, amount);
+            alert("Transfer of " + formatMoney(amount) + " to " + email + " successful!");
+            document.getElementById("transfer-email").value = "";
+            document.getElementById("transfer-amount").value = "";
+            await refreshBalance();
+            switchView('dashboard');
+        } catch (err) {
+            alert(err.message || "Transfer failed.");
+        }
+    }
+
+    async function handleWithdraw() {
+        const amount = parseFloat(document.getElementById("withdraw-amount").value);
+        if (!amount || amount <= 0) { alert("Enter a valid amount."); return; }
+        if (amount > (currentUser?.balance || 0)) { alert("Insufficient balance."); return; }
+
+        const country = document.getElementById("wd-country").value;
+        const holder = document.getElementById("wd-holder").value.trim();
+        if (!country) { alert("Select your country."); return; }
+        if (!holder) { alert("Enter the account holder name."); return; }
+
+        try {
+            await saveBankDetails({
+                country,
+                account_holder: holder,
+                bank_name: document.getElementById("wd-bank_name").value.trim(),
+                account_number: document.getElementById("wd-account_number").value.trim(),
+                routing_number: document.getElementById("wd-routing_number").value.trim(),
+                sort_code: document.getElementById("wd-sort_code").value.trim(),
+                iban: document.getElementById("wd-iban").value.trim(),
+                swift: document.getElementById("wd-swift").value.trim(),
+                agency: document.getElementById("wd-agency").value.trim()
+            });
+            await withdraw(amount);
+            alert("Withdrawal of " + formatMoney(amount) + " successful!");
+            document.getElementById("withdraw-amount").value = "";
+            await refreshBalance();
+            switchView('dashboard');
+        } catch (err) {
+            alert(err.message || "Withdrawal failed.");
+        }
+    }
+
+    async function handleSignOut() {
+        try {
+            await signOut();
+        } catch (e) {}
+        window.location.href = "index.html";
+    }
+
+    async function loadSavingsGoals() {
+        const list = document.getElementById("savings-list");
+        const noSav = document.getElementById("no-savings");
+        try {
+            const goals = await getSavingsGoals();
+            list.innerHTML = "";
+            if (goals.length === 0) {
+                list.appendChild(noSav);
+                return;
+            }
+            goals.forEach(g => {
+                const pct = Math.min(100, (parseFloat(g.saved_amount) / parseFloat(g.target_amount)) * 100);
+                const div = document.createElement("div");
+                div.className = "bg-white rounded-xl border border-gray-100 p-5 shadow-sm";
+                div.innerHTML = `
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="text-sm font-bold text-gray-900">${escHtml(g.name)}</h4>
+                        <span class="text-xs font-semibold text-gray-500">${formatMoney(g.saved_amount)} / ${formatMoney(g.target_amount)}</span>
+                    </div>
+                    <div class="w-full bg-gray-100 rounded-full h-2.5 mb-3">
+                        <div class="bg-brand-green h-2.5 rounded-full transition-all" style="width: ${pct}%"></div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs text-gray-400">${pct.toFixed(1)}% complete</span>
+                        <div class="flex gap-2">
+                            <button onclick="showSavingsDeposit('${g.id}')" class="text-xs bg-brand-green text-white px-3 py-1.5 rounded-lg hover:bg-emerald-800 transition">+ Deposit</button>
+                            ${parseFloat(g.saved_amount) > 0 ? `<button onclick="showSavingsWithdraw('${g.id}')" class="text-xs bg-red-500 text-white px-3 py-1.5 rounded-lg hover:bg-red-600 transition">Withdraw</button>` : ''}
+                        </div>
+                    </div>
+                `;
+                list.appendChild(div);
+            });
+        } catch (err) {
+            console.error("Failed to load savings:", err);
+        }
+    }
+
+    function escHtml(str) {
+        const d = document.createElement('div');
+        d.textContent = str;
+        return d.innerHTML;
+    }
+
+    async function handleCreateGoal(e) {
+        e.preventDefault();
+        const name = document.getElementById("savings-name").value.trim();
+        const target = parseFloat(document.getElementById("savings-target").value);
+        if (!name) { alert("Enter a goal name."); return; }
+        if (!target || target <= 0) { alert("Enter a valid target amount."); return; }
+        try {
+            await createSavingsGoal(name, target);
+            document.getElementById("savings-name").value = "";
+            document.getElementById("savings-target").value = "";
+            alert("Savings goal '" + name + "' created!");
+            loadSavingsGoals();
+        } catch (err) {
+            alert(err.message || "Failed to create goal.");
+        }
+    }
+
+    function showSavingsDeposit(goalId) {
+        const amt = prompt("Enter amount to deposit:");
+        if (!amt) return;
+        const amount = parseFloat(amt);
+        if (!amount || amount <= 0) { alert("Enter a valid amount."); return; }
+        if (amount > (currentUser?.balance || 0)) { alert("Insufficient balance."); return; }
+        handleSavingsDeposit(goalId, amount);
+    }
+
+    async function handleSavingsDeposit(goalId, amount) {
+        try {
+            await savingsDeposit(goalId, amount);
+            alert("Deposited " + formatMoney(amount) + " into savings!");
+            await refreshBalance();
+            loadSavingsGoals();
+        } catch (err) {
+            alert(err.message || "Deposit to savings failed.");
+        }
+    }
+
+    function showSavingsWithdraw(goalId) {
+        const amt = prompt("Enter amount to withdraw:");
+        if (!amt) return;
+        const amount = parseFloat(amt);
+        if (!amount || amount <= 0) { alert("Enter a valid amount."); return; }
+        handleSavingsWithdraw(goalId, amount);
+    }
+
+    async function handleSavingsWithdraw(goalId, amount) {
+        try {
+            await savingsWithdraw(goalId, amount);
+            alert("Withdrew " + formatMoney(amount) + " from savings!");
+            await refreshBalance();
+            loadSavingsGoals();
+        } catch (err) {
+            alert(err.message || "Withdrawal from savings failed.");
+        }
+    }
     </script>
 
 </body>

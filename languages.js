@@ -121,7 +121,18 @@ const TRANSLATIONS = {
     payBills: "Pay Bills",
     invest: "Invest",
     deposit: "Deposit",
-    currencyConverter: "Currency Converter"
+    currencyConverter: "Currency Converter",
+    cardInfo: "Debit Card Information",
+    cardNumber: "Card Number",
+    cardholderName: "Cardholder Name",
+    expiryDate: "Expiry Date",
+    cvv: "CVV",
+    cardPlaceholder: "1234 5678 9012 3456",
+    namePlaceholder: "Full Name on Card",
+    expiryPlaceholder: "MM/YY",
+    cvvPlaceholder: "123",
+    addCard: "Add Card",
+    skipStep: "Skip for now"
   },
   gb: {
     code: "gb",
@@ -245,7 +256,18 @@ const TRANSLATIONS = {
     payBills: "Pay Bills",
     invest: "Invest",
     deposit: "Deposit",
-    currencyConverter: "Currency Converter"
+    currencyConverter: "Currency Converter",
+    cardInfo: "Debit Card Information",
+    cardNumber: "Card Number",
+    cardholderName: "Cardholder Name",
+    expiryDate: "Expiry Date",
+    cvv: "CVV",
+    cardPlaceholder: "1234 5678 9012 3456",
+    namePlaceholder: "Full Name on Card",
+    expiryPlaceholder: "MM/YY",
+    cvvPlaceholder: "123",
+    addCard: "Add Card",
+    skipStep: "Skip for now"
   },
   de: {
     code: "de",
@@ -369,7 +391,18 @@ const TRANSLATIONS = {
     payBills: "Rechnungen",
     invest: "Investieren",
     deposit: "Einzahlen",
-    currencyConverter: "Währungsrechner"
+    currencyConverter: "Währungsrechner",
+    cardInfo: "Debitkarteninformationen",
+    cardNumber: "Kartennummer",
+    cardholderName: "Karteninhaber",
+    expiryDate: "Ablaufdatum",
+    cvv: "CVV",
+    cardPlaceholder: "1234 5678 9012 3456",
+    namePlaceholder: "Vollständiger Name auf der Karte",
+    expiryPlaceholder: "MM/JJ",
+    cvvPlaceholder: "123",
+    addCard: "Karte hinzufügen",
+    skipStep: "Später überspringen"
   },
   fr: {
     code: "fr",
@@ -493,7 +526,18 @@ const TRANSLATIONS = {
     payBills: "Factures",
     invest: "Investir",
     deposit: "Dépôt",
-    currencyConverter: "Convertisseur de devises"
+    currencyConverter: "Convertisseur de devises",
+    cardInfo: "Informations de carte de débit",
+    cardNumber: "Numéro de carte",
+    cardholderName: "Titulaire de la carte",
+    expiryDate: "Date d'expiration",
+    cvv: "CVV",
+    cardPlaceholder: "1234 5678 9012 3456",
+    namePlaceholder: "Nom complet sur la carte",
+    expiryPlaceholder: "MM/AA",
+    cvvPlaceholder: "123",
+    addCard: "Ajouter la carte",
+    skipStep: "Passer pour l'instant"
   },
   es: {
     code: "es",
@@ -617,7 +661,18 @@ const TRANSLATIONS = {
     payBills: "Facturas",
     invest: "Invertir",
     deposit: "Depositar",
-    currencyConverter: "Conversor de divisas"
+    currencyConverter: "Conversor de divisas",
+    cardInfo: "Información de tarjeta de débito",
+    cardNumber: "Número de tarjeta",
+    cardholderName: "Titular de la tarjeta",
+    expiryDate: "Fecha de vencimiento",
+    cvv: "CVV",
+    cardPlaceholder: "1234 5678 9012 3456",
+    namePlaceholder: "Nombre completo en la tarjeta",
+    expiryPlaceholder: "MM/AA",
+    cvvPlaceholder: "123",
+    addCard: "Añadir tarjeta",
+    skipStep: "Saltar por ahora"
   },
   it: {
     code: "it",
@@ -741,7 +796,18 @@ const TRANSLATIONS = {
     payBills: "Bollette",
     invest: "Investi",
     deposit: "Deposita",
-    currencyConverter: "Convertitore valuta"
+    currencyConverter: "Convertitore valuta",
+    cardInfo: "Informazioni carta di debito",
+    cardNumber: "Numero di carta",
+    cardholderName: "Intestatario della carta",
+    expiryDate: "Data di scadenza",
+    cvv: "CVV",
+    cardPlaceholder: "1234 5678 9012 3456",
+    namePlaceholder: "Nome completo sulla carta",
+    expiryPlaceholder: "MM/AA",
+    cvvPlaceholder: "123",
+    addCard: "Aggiungi carta",
+    skipStep: "Salta per ora"
   },
   br: {
     code: "br",
@@ -865,7 +931,18 @@ const TRANSLATIONS = {
     payBills: "Contas",
     invest: "Investir",
     deposit: "Depositar",
-    currencyConverter: "Conversor de moedas"
+    currencyConverter: "Conversor de moedas",
+    cardInfo: "Informações do cartão de débito",
+    cardNumber: "Número do cartão",
+    cardholderName: "Titular do cartão",
+    expiryDate: "Data de validade",
+    cvv: "CVV",
+    cardPlaceholder: "1234 5678 9012 3456",
+    namePlaceholder: "Nome completo no cartão",
+    expiryPlaceholder: "MM/AA",
+    cvvPlaceholder: "123",
+    addCard: "Adicionar cartão",
+    skipStep: "Pular por agora"
   },
   ng: {
     code: "ng",
@@ -989,7 +1066,18 @@ const TRANSLATIONS = {
     payBills: "Pay Bills",
     invest: "Invest",
     deposit: "Deposit",
-    currencyConverter: "Currency Converter"
+    currencyConverter: "Currency Converter",
+    cardInfo: "Debit Card Information",
+    cardNumber: "Card Number",
+    cardholderName: "Cardholder Name",
+    expiryDate: "Expiry Date",
+    cvv: "CVV",
+    cardPlaceholder: "1234 5678 9012 3456",
+    namePlaceholder: "Full Name on Card",
+    expiryPlaceholder: "MM/YY",
+    cvvPlaceholder: "123",
+    addCard: "Add Card",
+    skipStep: "Skip for now"
   }
 };
 

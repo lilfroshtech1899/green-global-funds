@@ -66,7 +66,7 @@
                 <p class="text-gray-400 text-xs mt-1" data-i18n="signUpSub">Create your Green Global Funds account</p>
             </div>
 
-            <form class="space-y-3.5">
+            <form class="space-y-3.5" onkeydown="handleEnter(event)">
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-400 text-sm">
                         <i class="far fa-user"></i>
@@ -93,7 +93,7 @@
                         <i class="fas fa-lock"></i>
                     </span>
                     <input type="password" id="signup-pass" data-i18n-placeholder="password" placeholder="Password" class="w-full pl-11 pr-11 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
-                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer text-xs">
+                    <span onclick="togglePass('signup-pass', this)" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer text-xs">
                         <i class="far fa-eye-slash"></i>
                     </span>
                 </div>
@@ -103,7 +103,7 @@
                         <i class="fas fa-lock"></i>
                     </span>
                     <input type="password" id="signup-confirm" data-i18n-placeholder="confirmPass" placeholder="Confirm Password" class="w-full pl-11 pr-11 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-emerald-600 transition">
-                    <span class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer text-xs">
+                    <span onclick="togglePass('signup-confirm', this)" class="absolute inset-y-0 right-0 flex items-center pr-4 text-gray-400 cursor-pointer text-xs">
                         <i class="far fa-eye-slash"></i>
                     </span>
                 </div>
@@ -120,6 +120,18 @@
                 </button>
             </form>
 
+            <div class="relative my-6 text-center">
+                <hr class="border-gray-100">
+                <span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-gray-400 text-xs" data-i18n="or">or</span>
+            </div>
+
+            <button type="button" onclick="handleGoogleSignUp()" class="w-full border border-gray-200 text-gray-700 py-3 rounded-xl font-medium text-sm flex items-center justify-center space-x-2 hover:bg-gray-50 transition cursor-pointer">
+                <svg class="w-4 h-4" viewBox="0 0 24 24">
+                    <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.275 1.565-1.88 4.604-6.887 4.604-4.33 0-7.866-3.577-7.866-8s3.536-8 7.866-8c2.46 0 4.105 1.025 5.047 1.926l3.227-3.107C18.29 1.137 15.538 0 12.24 0 5.58 0 0 5.37 0 12s5.58 12 12.24 12c6.96 0 11.57-4.834 11.57-11.79 0-.79-.085-1.4-.185-1.925H12.24z"/>
+                </svg>
+                <span data-i18n="signInGoogle">Sign up with Google</span>
+            </button>
+
             <div class="text-center text-xs text-gray-500 mt-6">
                 <span data-i18n="alreadyAccount">Already have an account?</span> <a href="signin.html" class="text-emerald-600 font-bold hover:underline" data-i18n="signIn">Sign In</a>
             </div>
@@ -127,11 +139,27 @@
 
     </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script src="supabase.js?v=2"></script>
 <script src="languages.js"></script>
 <script>
-document.addEventListener("DOMContentLoaded", function() { buildCountryOverlay(); initLanguageSelector(); });
+document.addEventListener("DOMContentLoaded", async function() {
+  buildCountryOverlay();
+  initLanguageSelector();
+  await initAuth();
+  onAuthChange(function(event, session) {
+    if (event === 'SIGNED_IN') {
+      window.location.href = "account.html";
+    }
+  });
+  const user = await getUserData();
+  if (user && window.location.hash) {
+    window.location.href = "account.html";
+  }
+});
 
-function handleSignUp() {
+async function handleSignUp() {
   const name = document.getElementById("signup-name");
   const email = document.getElementById("signup-email");
   const phone = document.getElementById("signup-phone");
@@ -151,7 +179,43 @@ function handleSignUp() {
     alert("Please agree to the Terms and Conditions.");
     return;
   }
-  window.location.href = "account.html";
+  try {
+    await signUpWithEmail(email.value.trim(), pass.value, name.value.trim(), phone.value.trim());
+    window.location.href = "account.html";
+  } catch (err) {
+    alert(err.message || "An error occurred during sign up.");
+  }
+}
+
+function handleEnter(e) {
+  if (e.key !== 'Enter') return;
+  const tag = e.target.tagName;
+  if (tag !== 'INPUT') return;
+  e.preventDefault();
+  const form = e.target.closest('form');
+  const inputs = form.querySelectorAll('input:not([type="checkbox"]):not([readonly]), button[type="submit"]');
+  const idx = Array.from(inputs).indexOf(e.target);
+  if (idx < inputs.length - 1) {
+    inputs[idx + 1].focus();
+  } else {
+    form.querySelector('button[type="submit"]')?.click();
+  }
+}
+
+function togglePass(id, el) {
+  const input = document.getElementById(id);
+  const icon = el.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.className = 'far fa-eye';
+  } else {
+    input.type = 'password';
+    icon.className = 'far fa-eye-slash';
+  }
+}
+
+function handleGoogleSignUp() {
+  signInWithGoogle(window.location.origin + "/signup.html");
 }
 </script>
 </body>

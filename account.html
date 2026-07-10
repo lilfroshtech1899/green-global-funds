@@ -81,15 +81,11 @@
                 </div>
 
                 <div>
-                    <label for="state" class="block text-sm font-semibold text-gray-600 mb-1.5" data-i18n="stateLabel">State / Federal State</label>
+                    <label for="state" class="block text-sm font-semibold text-gray-600 mb-1.5" data-i18n="stateLabel">State / Region</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-green pointer-events-none"><i class="fas fa-map text-sm"></i></span>
-                        <select id="state" class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white appearance-none cursor-pointer">
+                        <select id="state" disabled class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed">
                             <option value="" disabled selected data-i18n="selectState">Select state</option>
-                            <option value="Bavaria">Bavaria</option>
-                            <option value="Berlin">Berlin</option>
-                            <option value="Hamburg">Hamburg</option>
-                            <option value="NRW">North Rhine-Westphalia</option>
                         </select>
                         <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down text-xs"></i></span>
                     </div>
@@ -99,11 +95,7 @@
                     <label for="country" class="block text-sm font-semibold text-gray-600 mb-1.5" data-i18n="countryLabel">Country</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-brand-green pointer-events-none"><i class="fas fa-globe text-sm"></i></span>
-                        <select id="country" class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white appearance-none cursor-pointer">
-                            <option value="Germany" selected>Germany</option>
-                            <option value="Austria">Austria</option>
-                            <option value="Switzerland">Switzerland</option>
-                            <option value="Nigeria">Nigeria</option>
+                        <select id="country" onchange="populateStates()" class="w-full pl-10 pr-10 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none transition bg-white appearance-none cursor-pointer">
                         </select>
                         <span class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 pointer-events-none"><i class="fas fa-chevron-down text-xs"></i></span>
                     </div>
@@ -114,7 +106,7 @@
                 <a href="signup.html" class="text-sm text-gray-500 hover:text-brand-green transition flex items-center gap-1">
                     <i class="fas fa-arrow-left text-xs"></i> <span data-i18n="back">Back</span>
                 </a>
-                <button type="submit" class="bg-brand-green text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-800 transition shadow-sm" data-i18n="continueBtn">
+                <button type="button" onclick="handleAddressContinue()" class="bg-brand-green text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-800 transition shadow-sm" data-i18n="continueBtn">
                     Continue
                 </button>
             </div>
@@ -127,7 +119,88 @@
         </div>
     </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script src="supabase.js?v=3"></script>
 <script src="languages.js"></script>
-<script>document.addEventListener("DOMContentLoaded", function() { buildCountryOverlay(); initLanguageSelector(); });</script>
+<script>
+const STATES = {
+  us: ["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont","Virginia","Washington","West Virginia","Wisconsin","Wyoming"],
+  gb: ["England","Scotland","Wales","Northern Ireland"],
+  de: ["Baden-Württemberg","Bavaria","Berlin","Brandenburg","Bremen","Hamburg","Hesse","Lower Saxony","Mecklenburg-Vorpommern","North Rhine-Westphalia","Rhineland-Palatinate","Saarland","Saxony","Saxony-Anhalt","Schleswig-Holstein","Thuringia"],
+  fr: ["Auvergne-Rhône-Alpes","Brittany","Bourgogne-Franche-Comté","Centre-Val de Loire","Corsica","Grand Est","Hauts-de-France","Île-de-France","Normandy","Nouvelle-Aquitaine","Occitanie","Pays de la Loire","Provence-Alpes-Côte d'Azur"],
+  es: ["Andalusia","Aragon","Asturias","Balearic Islands","Basque Country","Canary Islands","Cantabria","Castile and León","Castilla-La Mancha","Catalonia","Extremadura","Galicia","La Rioja","Madrid","Murcia","Navarre","Valencia"],
+  it: ["Abruzzo","Apulia","Basilicata","Calabria","Campania","Emilia-Romagna","Friuli-Venezia Giulia","Lazio","Liguria","Lombardy","Marche","Molise","Piedmont","Sardinia","Sicily","Trentino-Alto Adige","Tuscany","Umbria","Veneto"],
+  ng: ["Abia","Abuja FCT","Adamawa","Akwa Ibom","Anambra","Bauchi","Bayelsa","Benue","Borno","Cross River","Delta","Ebonyi","Edo","Ekiti","Enugu","Gombe","Imo","Jigawa","Kaduna","Kano","Katsina","Kebbi","Kogi","Kwara","Lagos","Nasarawa","Niger","Ogun","Ondo","Osun","Oyo","Plateau","Rivers","Sokoto","Taraba","Yobe","Zamfara"],
+  br: ["Acre","Alagoas","Amapá","Amazonas","Bahia","Ceará","Distrito Federal","Espírito Santo","Goiás","Maranhão","Mato Grosso","Mato Grosso do Sul","Minas Gerais","Pará","Paraíba","Paraná","Pernambuco","Piauí","Rio de Janeiro","Rio Grande do Norte","Rio Grande do Sul","Rondônia","Roraima","Santa Catarina","São Paulo","Sergipe","Tocantins"]
+};
+
+document.addEventListener("DOMContentLoaded", async function() {
+  const user = await initAuth();
+  if (!user) { window.location.href = "signin.html"; return; }
+  buildCountryOverlay();
+  initLanguageSelector();
+  populateCountries();
+});
+
+function populateCountries() {
+  const countrySel = document.getElementById("country");
+  countrySel.innerHTML = '<option value="" disabled selected>Select country</option>';
+  COUNTRIES.forEach(c => {
+    const opt = document.createElement("option");
+    opt.value = c.code;
+    opt.textContent = c.flag + " " + c.name;
+    countrySel.appendChild(opt);
+  });
+}
+
+function populateStates() {
+  const countryCode = document.getElementById("country").value;
+  const stateSel = document.getElementById("state");
+  stateSel.innerHTML = '<option value="" disabled selected>Select state</option>';
+  if (countryCode && STATES[countryCode]) {
+    STATES[countryCode].forEach(s => {
+      const opt = document.createElement("option");
+      opt.value = s;
+      opt.textContent = s;
+      stateSel.appendChild(opt);
+    });
+  }
+  stateSel.disabled = !countryCode;
+}
+
+async function handleAddressContinue() {
+  const street = document.getElementById("street");
+  const postal = document.getElementById("postal-code");
+  const city = document.getElementById("city");
+  const state = document.getElementById("state");
+  const country = document.getElementById("country");
+
+  if (!street.value.trim() || !postal.value.trim() || !city.value.trim()) {
+    alert("Please fill in all address fields.");
+    return;
+  }
+  if (!country.value) {
+    alert("Please select your country.");
+    return;
+  }
+  if (!state.value) {
+    alert("Please select your state.");
+    return;
+  }
+  try {
+    await updateProfile({
+      street: street.value.trim(),
+      postal_code: postal.value.trim(),
+      city: city.value.trim(),
+      state: state.value,
+      country: country.value
+    });
+    window.location.href = "card.html";
+  } catch (err) {
+    alert(err.message || "Failed to save address.");
+  }
+}
+</script>
 </body>
 </html>

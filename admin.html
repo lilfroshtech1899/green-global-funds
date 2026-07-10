@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Green Global Funds</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .bg-brand-green { background-color: #007A33; }
+        .text-brand-green { color: #007A33; }
+        table { font-size: 13px; }
+        th { position: sticky; top: 0; z-index: 10; }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-800 antialiased min-h-screen">
+
+    <header class="bg-white border-b border-gray-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-brand-green flex items-center justify-center text-white">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <span class="font-bold text-sm">Admin Panel</span>
+            </div>
+            <a href="index.html" class="text-xs text-gray-400 hover:text-brand-green transition">Back to Site</a>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8">
+
+        <div id="login-section" class="max-w-sm mx-auto mt-20 text-center">
+            <div class="bg-white rounded-xl border border-gray-100 p-8 shadow-sm">
+                <div class="w-14 h-14 bg-brand-green rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lock text-white text-xl"></i>
+                </div>
+                <h2 class="text-lg font-bold text-gray-900 mb-2">Admin Access</h2>
+                <p class="text-sm text-gray-500 mb-6">Enter the admin password to continue</p>
+                <input type="password" id="admin-pass" placeholder="Password" class="w-full px-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-emerald-600 transition mb-4">
+                <button onclick="checkAdminPass()" class="w-full bg-brand-green text-white py-2.5 rounded-lg text-sm font-medium hover:bg-emerald-800 transition shadow-sm">Enter</button>
+                <p id="admin-pass-error" class="text-red-500 text-xs mt-3 hidden">Incorrect password</p>
+            </div>
+        </div>
+
+        <div id="admin-content" class="hidden">
+            <div class="flex items-center justify-between mb-8">
+                <h1 class="text-2xl font-bold text-gray-900">Admin Dashboard</h1>
+                <button onclick="loadAllData()" class="bg-brand-green text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-800 transition shadow-sm">
+                    <i class="fas fa-sync-alt mr-1"></i> Refresh
+                </button>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mb-8">
+                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                    <p class="text-xs text-gray-500">Total Users</p>
+                    <p class="text-2xl font-bold text-gray-900" id="stat-users">0</p>
+                </div>
+                <div class="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                    <p class="text-xs text-gray-500">Total Cards</p>
+                    <p class="text-2xl font-bold text-gray-900" id="stat-cards">0</p>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <div class="flex items-center gap-4 mb-4">
+                    <h2 class="text-lg font-bold text-gray-900">Users</h2>
+                    <button onclick="switchAdminTab('users')" class="admin-tab text-sm font-medium text-brand-green border-b-2 border-brand-green pb-1" id="tab-users">Profiles</button>
+                    <button onclick="switchAdminTab('cards')" class="admin-tab text-sm font-medium text-gray-400 pb-1" id="tab-cards">Cards</button>
+                </div>
+
+                <div id="admin-users" class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                <th class="px-4 py-3">Name</th>
+                                <th class="px-4 py-3">Email</th>
+                                <th class="px-4 py-3">Phone</th>
+                                <th class="px-4 py-3">Address</th>
+                                <th class="px-4 py-3">Country</th>
+                                <th class="px-4 py-3">Balance</th>
+                                <th class="px-4 py-3">Joined</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                    <div id="no-users" class="text-center py-10 text-gray-400 hidden">
+                        <p class="text-sm">No users found.</p>
+                    </div>
+                </div>
+
+                <div id="admin-cards" class="hidden bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                                <th class="px-4 py-3">User Email</th>
+                                <th class="px-4 py-3">Card Type</th>
+                                <th class="px-4 py-3">Last Four</th>
+                                <th class="px-4 py-3">Cardholder</th>
+                                <th class="px-4 py-3">Expires</th>
+                                <th class="px-4 py-3">Added</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cards-tbody" class="divide-y divide-gray-100"></tbody>
+                    </table>
+                    <div id="no-cards-admin" class="text-center py-10 text-gray-400 hidden">
+                        <p class="text-sm">No cards found.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.0/dist/umd/supabase.min.js"></script>
+<script src="supabase-config.js"></script>
+<script>
+// Admin uses service_role key to bypass RLS
+const ADMIN_KEY = ' eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBncmh5eHZibWV5bmNteHB1eXZnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4MzY3NDA5OCwiZXhwIjoyMDk5MjUwMDk4fQ.qh-a-4gh1IptiJhHfo4fTiFMJP7BQ9dE9bG7LWvLNVA';
+</script>
+<script>
+const ADMIN_PASSWORD = 'admin123';
+
+function checkAdminPass() {
+    const pass = document.getElementById('admin-pass').value;
+    if (pass === ADMIN_PASSWORD) {
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('admin-content').classList.remove('hidden');
+        loadAllData();
+    } else {
+        document.getElementById('admin-pass-error').classList.remove('hidden');
+    }
+}
+
+function switchAdminTab(tab) {
+    document.querySelectorAll('.admin-tab').forEach(t => {
+        t.classList.remove('text-brand-green', 'border-brand-green');
+        t.classList.add('text-gray-400');
+        t.style.borderBottom = 'none';
+    });
+    document.getElementById('tab-' + tab).classList.remove('text-gray-400');
+    document.getElementById('tab-' + tab).classList.add('text-brand-green', 'border-brand-green');
+    document.getElementById('tab-' + tab).style.borderBottom = '2px solid #007A33';
+    document.getElementById('admin-users').classList.toggle('hidden', tab !== 'users');
+    document.getElementById('admin-cards').classList.toggle('hidden', tab !== 'cards');
+}
+
+function getClient() {
+    return supabase.createClient(SUPABASE_URL, ADMIN_KEY);
+}
+
+async function loadAllData() {
+    await loadProfiles();
+    await loadCards();
+}
+
+async function loadProfiles() {
+    const tbody = document.getElementById('users-tbody');
+    const noUsers = document.getElementById('no-users');
+    try {
+        const { data, error } = await getClient().from('profiles').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        const users = data || [];
+        tbody.innerHTML = '';
+        document.getElementById('stat-users').textContent = users.length;
+        if (users.length === 0) {
+            noUsers.classList.remove('hidden');
+            return;
+        }
+        noUsers.classList.add('hidden');
+        users.forEach(u => {
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 transition';
+            const addr = [u.street, u.postal_code, u.city, u.state].filter(Boolean).join(', ') || '-';
+            tr.innerHTML = `
+                <td class="px-4 py-3 font-medium text-gray-900">${esc(u.full_name) || '-'}</td>
+                <td class="px-4 py-3 text-gray-600">${esc(u.email) || '-'}</td>
+                <td class="px-4 py-3 text-gray-600">${esc(u.phone) || '-'}</td>
+                <td class="px-4 py-3 text-gray-600 max-w-[200px] truncate" title="${esc(addr)}">${esc(addr)}</td>
+                <td class="px-4 py-3">${esc(u.country) || '-'}</td>
+                <td class="px-4 py-3 font-semibold text-gray-900">$${parseFloat(u.balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}</td>
+                <td class="px-4 py-3 text-gray-500 text-xs">${u.created_at ? new Date(u.created_at).toLocaleDateString() : '-'}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch (err) {
+        console.error('Failed to load profiles:', err);
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center py-6 text-red-500 text-sm">Error loading data: ' + err.message + '</td></tr>';
+    }
+}
+
+async function loadCards() {
+    const tbody = document.getElementById('cards-tbody');
+    const noCards = document.getElementById('no-cards-admin');
+    try {
+        const { data, error } = await getClient().from('cards').select('*').order('created_at', { ascending: false });
+        if (error) throw error;
+        const cards = data || [];
+        tbody.innerHTML = '';
+        document.getElementById('stat-cards').textContent = cards.length;
+        if (cards.length === 0) {
+            noCards.classList.remove('hidden');
+            return;
+        }
+        noCards.classList.add('hidden');
+        for (const c of cards) {
+            let userEmail = c.user_id;
+            try {
+                const { data: p } = await getClient().from('profiles').select('email').eq('id', c.user_id).single();
+                if (p) userEmail = p.email;
+            } catch (e) {}
+            const tr = document.createElement('tr');
+            tr.className = 'hover:bg-gray-50 transition';
+            tr.innerHTML = `
+                <td class="px-4 py-3 text-gray-600">${esc(userEmail)}</td>
+                <td class="px-4 py-3"><span class="capitalize text-gray-900 font-medium">${esc(c.card_type)}</span></td>
+                <td class="px-4 py-3 font-mono text-gray-800">**** ${esc(c.last_four)}</td>
+                <td class="px-4 py-3 text-gray-900">${esc(c.cardholder_name)}</td>
+                <td class="px-4 py-3 text-gray-600">${c.expiry_month}/${c.expiry_year ? c.expiry_year.slice(2) : '??'}</td>
+                <td class="px-4 py-3 text-xs text-gray-500">${c.created_at ? new Date(c.created_at).toLocaleDateString() : '-'}</td>
+            `;
+            tbody.appendChild(tr);
+        }
+    } catch (err) {
+        console.error('Failed to load cards:', err);
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center py-6 text-red-500 text-sm">Error loading data: ' + err.message + '</td></tr>';
+    }
+}
+
+function esc(str) {
+    if (!str) return '';
+    const d = document.createElement('div');
+    d.textContent = String(str);
+    return d.innerHTML;
+}
+</script>
+</body>
+</html>
