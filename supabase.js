@@ -50,7 +50,14 @@ async function getUserData() {
   };
 }
 
-function clearUserData() {}
+function clearUserData() {
+  const keys = Object.keys(localStorage);
+  keys.forEach(k => {
+    if (k.startsWith('sb-') || k === 'supabase.auth.token') {
+      localStorage.removeItem(k);
+    }
+  });
+}
 
 function getUserInitials(name) {
   if (!name) return '?';
